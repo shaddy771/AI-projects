@@ -1,0 +1,23 @@
+# Реквизиты продавца (пример)
+# Скопируйте в workspace/seller.yaml и заполните своими данными.
+
+address: "Москва, ул. Тверская, 1"
+contact_phone: "+79991234567"
+manager_name: "Анна"
+contact_method: "По телефону и в сообщениях"
+listing_fee: "Package"  # Package | PackageSingle | Single
+
+default_category: "Товары для дома и дачи"
+default_goods_type: "Мебель и интерьер"
+default_condition: "Новое"
+default_ad_type: "Товар приобретен на продажу"
+default_availability: "В наличии"
+
+images_per_item: 3
+image_source: "duckduckgo"
+download_images: false
+# Если скачиваете фото локально и отдаёте со своего CDN/облака:
+# image_host_base_url: "https://cdn.example.com/avito"
+
+# Доп. колонки по умолчанию (категорийные параметры из шаблона Авито)
+extra_defaults: {}

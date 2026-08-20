@@ -1,0 +1,36 @@
+products:
+  - id: "lamp-001"
+    brand: "NordLux"
+    name: "Настольная лампа E27"
+    price: 2490
+    category: home
+    goods_type: "Мебель и интерьер"
+    condition: "Новое"
+    features:
+      - "Цоколь E27"
+      - "Высота 42 см"
+      - "Материал: металл и ткань"
+    keywords: ["настольная лампа", "светильник"]
+    image_query: "настольная лампа тканевый абажур"
+
+  - id: "chair-002"
+    title: "Офисное кресло эргономичное"
+    price: 8990
+    category: home
+    features:
+      - "Поясничная поддержка"
+      - "Сетка на спинке"
+      - "Нагрузка до 120 кг"
+    image_query: "ergonomic office chair mesh"
+
+  - id: "phone-003"
+    brand: "Samsung"
+    name: "Galaxy A55 8/256"
+    price: 34990
+    category: phones
+    condition: "Новое"
+    features:
+      - "8 ГБ ОЗУ / 256 ГБ"
+      - "Гарантия 1 год"
+      - "Полный комплект"
+    image_query: "Samsung Galaxy A55 smartphone"

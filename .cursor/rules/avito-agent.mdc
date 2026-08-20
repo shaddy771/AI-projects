@@ -1,0 +1,14 @@
+---
+description: Правила для агента объявлений Авито (корень репозитория)
+globs:
+  - avito-agent/**
+---
+
+# Avito listings agent
+
+При задачах про Авито, автозагрузку, объявления товаров, XLSX/фиды:
+
+1. Следуй skill `avito-agent/.cursor/skills/avito-listings/SKILL.md`
+2. Читай конфиг `avito-agent/workspace/seller.yaml` (или example)
+3. Сверяй колонки с официальным шаблоном категории Авито
+4. Отвечай на языке пользователя (по умолчанию русский)
