@@ -1,0 +1,9 @@
+# Игнорируемые локальные материалы диссертации
+
+dissertation-agent/workspace/project.yaml
+dissertation-agent/workspace/drafts/**
+!dissertation-agent/workspace/drafts/.gitkeep
+dissertation-agent/workspace/notes/**
+!dissertation-agent/workspace/notes/.gitkeep
+dissertation-agent/workspace/sources/**
+!dissertation-agent/workspace/sources/.gitkeep

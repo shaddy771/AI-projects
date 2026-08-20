@@ -1,0 +1,59 @@
+# Конфиг диссертации (пример)
+
+Скопируй в `dissertation-agent/workspace/project.yaml` и заполни.
+
+```yaml
+title: "Влияние цифровых платформ на трансформацию трудовых отношений"
+degree: "кандидат наук"  # кандидат наук | доктор наук | PhD
+specialty_code: "5.2.3"
+specialty_name: "Региональная и отраслевая экономика"
+organization: "Название университета"
+council: "Диссертационный совет …"
+advisor: "ФИО, степень, звание"
+language: "ru"
+citation_style: "GOST_R_7_0_5"  # GOST_R_7_0_5 | APA | Chicago
+bibliography_order: "alphabetical"  # alphabetical | citation_order
+
+target_volume:
+  unit: "pages"
+  total: 150
+  introduction: 12
+  conclusion: 8
+
+focus:
+  problem: "Кратко сформулированная научная проблема"
+  object: "Объект"
+  subject: "Предмет"
+  goal: "Цель"
+  tasks:
+    - "Задача 1"
+    - "Задача 2"
+    - "Задача 3"
+  novelty:
+    - "Пункт новизны 1"
+  defense_statements:
+    - "Положение 1"
+    - "Положение 2"
+
+chapters:
+  - id: ch1
+    title: "Теоретические основы исследования"
+    status: draft
+  - id: ch2
+    title: "Методология и эмпирическая база"
+    status: planned
+  - id: ch3
+    title: "Результаты и обсуждение"
+    status: planned
+
+constraints:
+  no_fabricated_sources: true
+  no_fabricated_data: true
+  mark_gaps: true
+  write_incrementally: true
+
+paths:
+  drafts_dir: "workspace/drafts"
+  notes_dir: "workspace/notes"
+  sources_dir: "workspace/sources"
+```
