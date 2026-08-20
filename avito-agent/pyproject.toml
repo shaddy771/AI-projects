@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "avito-agent"
+version = "0.1.0"
+description = "Агент подготовки XLSX объявлений Авито: описания и поиск картинок"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "openpyxl>=3.1.5",
+  "PyYAML>=6.0.2",
+  "ddgs>=9.0.0",
+  "Pillow>=10.4.0",
+  "requests>=2.32.0",
+  "click>=8.1.7",
+  "pydantic>=2.9.0",
+  "rich>=13.9.0",
+]
+
+[project.scripts]
+avito-agent = "avito_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
