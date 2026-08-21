@@ -7,3 +7,5 @@ dissertation-agent/workspace/notes/**
 !dissertation-agent/workspace/notes/.gitkeep
 dissertation-agent/workspace/sources/**
 !dissertation-agent/workspace/sources/.gitkeep
+dissertation-agent/workspace/uploads/**
+!dissertation-agent/workspace/uploads/.gitkeep
