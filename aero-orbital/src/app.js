@@ -32,7 +32,7 @@ export function mountApp(root) {
 
           <div class="dial-wrap">
             <div class="dial-stage" data-dial-root></div>
-            <p class="dial-hint">Проведи по кольцу</p>
+            <p class="dial-hint">Крути центральную ручку</p>
           </div>
         </div>
 
@@ -121,7 +121,6 @@ export function mountApp(root) {
   createOrbitalDial(root.querySelector('[data-dial-root]'), {
     onChange: (temp, mood) => {
       orderTemp.textContent = String(temp)
-      ambient.dataset.mode = mood.mode
       const pointKey = mood.mode === 'hot' ? 'warm' : mood.mode
       points.forEach((el) => {
         el.classList.toggle('is-active', el.dataset.point === pointKey)
