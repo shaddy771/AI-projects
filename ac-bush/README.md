@@ -29,7 +29,18 @@ npm run dev
 
 ## Концепты (архив)
 
-Все 4 исходных мокапа — в `public/concepts/`. В продакшн-версии реализованы **v1** и **v2**.
+- `public/concepts/` — 4 «бушующих» мокапа (реализованы v1 + v2)
+- `public/concepts-future/` — 5 минималистичных «из будущего» (AERO)
+
+### Будущее — минимализм и интерактив
+
+| # | Название | Интерактив | Реализуемо сейчас |
+| --- | --- | --- | --- |
+| 1 | Ambient Climate | градиент атмосферы от температуры / курсора | CSS + pointer tracking |
+| 2 | Orbital Dial | кольцо 22°C, крутишь — меняется комфорт | SVG + drag arc |
+| 3 | Glass Room Stack | слои стекла с 22°C, влажностью, dB | backdrop-filter + scroll depth |
+| 4 | Breathing Room | комната «дышит», hold-to-cool | CSS scale + long-press |
+| 5 | Comfort Curve | график температуры за 24ч как hero | Canvas/SVG chart |
 
 ## Стек
 
