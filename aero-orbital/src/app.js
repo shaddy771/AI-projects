@@ -15,24 +15,24 @@ export function mountApp(root) {
 
     <main id="top">
       <section class="hero" id="dial">
-        <div class="hero-grid">
+        <div class="hero-center">
           <div class="hero-copy">
             <p class="eyebrow">Orbital · 2034</p>
             <h1>Крути — и&nbsp;комната слушается</h1>
             <p class="lede">
-              Орбитальный интерфейс комфорта. Одно кольцо вместо десяти экранов —
-              настройте температуру жестом и подберите AERO под вашу комнату.
+              Одно кольцо вместо десяти экранов. Настрой климат жестом —
+              и подбери AERO под свою комнату.
             </p>
-            <ul class="hero-points">
-              <li data-point="cool">16–19° — быстрое охлаждение</li>
-              <li data-point="comfort">20–23° — зона комфорта</li>
-              <li data-point="warm">24–30° — мягкое тепло</li>
-            </ul>
           </div>
 
           <div class="dial-wrap">
             <div class="dial-stage" data-dial-root></div>
             <p class="dial-hint">Крути центральную ручку</p>
+            <ul class="hero-points">
+              <li data-point="cool">16–19° · охлаждение</li>
+              <li data-point="comfort">20–23° · комфорт</li>
+              <li data-point="warm">24–30° · тепло</li>
+            </ul>
           </div>
         </div>
 
