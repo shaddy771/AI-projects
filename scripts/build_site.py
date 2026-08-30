@@ -26,6 +26,7 @@ from shared import (  # noqa: E402
     HEAD_ASSETS,
     SERVICE_COMBOS,
     float_cta,
+    img_tag,
     social_bar,
     TELEGRAM_URL,
     VIBER_URL,
@@ -73,7 +74,7 @@ def city_local_html(city: dict) -> str:
           </div>
         </div>
         <figure class="local-info__photo">
-          <img src="/images/door-unlock.svg" width="400" height="300" alt="Вскрытие замков в {prep} без повреждений" loading="lazy">
+          {img_tag("door-unlock", f"Вскрытие замков в {prep} без повреждений", 400, 300)}
         </figure>
       </div>
     </section>"""
@@ -205,7 +206,7 @@ def render_combo(service_slug: str, city: dict) -> str:
           </div>
 {social_bar()}
         </div>
-        <figure class="hero__photo"><img src="/images/{'car-unlock' if service_slug == 'vskrytie-avto' else 'lock-repair'}.svg" width="360" height="270" alt="{svc['h1']} в {prep}" loading="eager"></figure>
+        <figure class="hero__photo">{img_tag("car-unlock" if service_slug == "vskrytie-avto" else "lock-repair", f"{svc['h1']} в {prep}", 360, 270, "eager")}</figure>
       </div>
     </section>
     <section class="section section--alt">
@@ -291,6 +292,13 @@ def main():
         print(f"Combo: {svc} x {len(CITIES)} cities")
 
     for slug, html in render_services().items():
+        img_name = "car-unlock" if slug == "vskrytie-avto" else "lock-repair"
+        photo = f'        <figure class="hero__photo">{img_tag(img_name, SERVICE_COMBOS.get(slug, {}).get("title_short", slug), 360, 270, "eager")}</figure>\n'
+        html = html.replace(
+            "          </div>\n        </div>\n      </div>\n    </section>\n\n    <section class=\"section\">",
+            "          </div>\n" + photo + "        </div>\n      </div>\n    </section>\n\n    <section class=\"section\">",
+            1,
+        )
         html = html.replace('href="/css/style.css"', 'href="/css/style.min.css"')
         html = html.replace('<link rel="preconnect" href="https://fonts.googleapis.com">', '')
         html = html.replace('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')

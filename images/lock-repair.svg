@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label=" 5<>=B 8 70<5=0 70<:>2">
-  <rect width="800" height="600" fill="#f8f9fb"/>
-  <rect x="280" y="150" width="240" height="300" rx="12" fill="#415a77"/>
-  <circle cx="400" cy="300" r="50" fill="none" stroke="#e85d04" stroke-width="8"/>
-  <circle cx="400" cy="300" r="15" fill="#e85d04"/>
-  <rect x="350" y="120" width="100" height="30" rx="4" fill="#778da9"/>
-  <path d="M200 450h400" stroke="#2d6a4f" stroke-width="4" stroke-dasharray="12 8"/>
-  <text x="400" y="520" text-anchor="middle" fill="#0d1b2a" font-family="system-ui,sans-serif" font-size="24" font-weight="700"> 5<>=B 8 70<5=0 70<:>2</text>
-</svg>

@@ -25,7 +25,7 @@ python3 -m http.server 8080
 - `scripts/generate_pages.py` — полная пересборка
 - `css/style.min.css`, `js/main.min.js` — продакшн-ассеты
 - `fonts/` — self-hosted Manrope
-- `images/` — иллюстрации (замените на фото)
+- `images/` — фото WebP + OG-cover.jpg (сгенерированы, можно заменить на свои)
 
 ## Мессенджеры
 
