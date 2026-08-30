@@ -7,6 +7,9 @@ from shared import (  # noqa: F401
     DOMAIN,
     PHONE,
     PHONE_TEL,
+    PHONE_VIBER,
+    WHATSAPP_URL,
+    VIBER_URL,
     ai_head_meta,
     float_cta,
     service_card_html,
@@ -65,11 +68,11 @@ def header_nav() -> str:
 
 
 def mobile_nav() -> str:
-    return """        <li><a href="/vskrytie-avto.html">Вскрытие авто</a></li>
+    return f"""        <li><a href="/vskrytie-avto.html">Вскрытие авто</a></li>
         <li><a href="/remont-zamkov.html">Ремонт замков</a></li>
         <li><a href="/zamena-zamkov.html">Замена замков</a></li>
         <li><a href="/#areas">Города</a></li>
-        <li><a href="tel:+375291234567" class="mobile-menu__phone">+375 (29) 123-45-67</a></li>"""
+        <li><a href="tel:{PHONE_TEL}" class="mobile-menu__phone">{PHONE}</a></li>"""
 
 
 def footer_block() -> str:
@@ -104,8 +107,8 @@ def footer_block() -> str:
         <ul>
           <li><a href="tel:{PHONE_TEL}">{PHONE}</a></li>
           <li><a href="https://t.me/zamokservice_mogilev" rel="noopener">Telegram</a></li>
-          <li><a href="viber://chat?number=375291234567">Viber</a></li>
-          <li><a href="https://wa.me/375291234567" rel="noopener">WhatsApp</a></li>
+          <li><a href="{VIBER_URL}">Viber</a></li>
+          <li><a href="{WHATSAPP_URL}" rel="noopener">WhatsApp</a></li>
         </ul>
       </div>
     </div>

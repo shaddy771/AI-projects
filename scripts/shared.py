@@ -6,9 +6,9 @@ import re
 
 DOMAIN = "https://vskrytie-zamkov-mogilev.by"
 EMAIL = "info@vskrytie-zamkov-mogilev.by"
-PHONE = "+375 (29) 123-45-67"
-PHONE_TEL = "+375291234567"
-PHONE_VIBER = "375291234567"
+PHONE = "+375 (44) 791-39-41"
+PHONE_TEL = "+375447913941"
+PHONE_VIBER = "375447913941"
 TELEGRAM_URL = "https://t.me/zamokservice_mogilev"
 VIBER_URL = f"viber://chat?number={PHONE_VIBER}"
 WHATSAPP_URL = f"https://wa.me/{PHONE_VIBER}"
@@ -354,7 +354,7 @@ BLOG_CONTENT = {
 <p>Дверь могла просесть и перекашивать замок. Попробуйte прижать дверь к раме и повернуть ключ.</p>
 <h2>4. Вызовите мастера</h2>
 <p>Если замок не открывается 5–10 минут — звоните. Профессиональное вскрытие в Могилёве стоит от 30 BYN и занимает 10–20 минут.</p>
-<p><a href="tel:+375291234567">Позвонить мастеру: +375 (29) 123-45-67</a></p>""",
+<p><a href="tel:{PHONE_TEL}">Позвонить мастеру: {PHONE}</a></p>""".format(PHONE_TEL=PHONE_TEL, PHONE=PHONE),
     "kak-vybrat-zamok-dlya-dveri": """
 <p>Надёжный замок — первая линия защиты квартиры. Рассказываем, на что обратить внимание при выборе.</p>
 <h2>Класс безопасности</h2>
