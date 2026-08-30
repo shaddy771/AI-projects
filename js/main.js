@@ -26,19 +26,6 @@
     });
   }
 
-  // Modal
-  const modal = document.getElementById('callback-modal');
-  const modalTriggers = document.querySelectorAll('[data-modal="callback"]');
-  const modalClose = modal?.querySelector('.modal__close');
-
-  modalTriggers.forEach(btn => {
-    btn.addEventListener('click', () => modal?.showModal());
-  });
-  modalClose?.addEventListener('click', () => modal?.close());
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) modal.close();
-  });
-
   // Phone mask
   function formatPhone(value) {
     const digits = value.replace(/\D/g, '');
@@ -61,7 +48,6 @@
 
   document.querySelectorAll('input[type="tel"]').forEach(input => {
     input.addEventListener('input', () => {
-      const pos = input.selectionStart;
       input.value = formatPhone(input.value);
       input.setSelectionRange(input.value.length, input.value.length);
     });
@@ -75,32 +61,27 @@
     setTimeout(() => { toast.hidden = true; }, 4000);
   }
 
-  ['hero-form', 'modal-form'].forEach(id => {
-    const form = document.getElementById(id);
-    form?.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const phone = form.querySelector('[name="phone"]')?.value || '';
-      if (phone.replace(/\D/g, '').length < 12) {
-        alert('Пожалуйста, введите корректный номер телефона');
-        return;
-      }
-      // Analytics placeholder — replace with real tracking
-      if (typeof gtag === 'function') {
-        gtag('event', 'generate_lead', { event_category: 'form', event_label: id });
-      }
-      if (typeof ym === 'function') {
-        ym(/* YANDEX_METRIKA_ID */, 'reachGoal', 'lead_form');
-      }
-      form.reset();
-      modal?.close();
-      showToast();
-    });
+  const feedbackForm = document.getElementById('feedback-form');
+  feedbackForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const phone = feedbackForm.querySelector('[name="phone"]')?.value || '';
+    if (phone.replace(/\D/g, '').length < 12) {
+      alert('Пожалуйста, введите корректный номер телефона');
+      return;
+    }
+    if (typeof gtag === 'function') {
+      gtag('event', 'generate_lead', { event_category: 'form', event_label: 'feedback-form' });
+    }
+    if (typeof ym === 'function') {
+      ym(/* YANDEX_METRIKA_ID */, 'reachGoal', 'lead_form');
+    }
+    feedbackForm.reset();
+    showToast();
   });
 
   // Dynamic masters count (social proof)
   const mastersEl = document.getElementById('masters-count');
   if (mastersEl) {
-    const base = 3;
     setInterval(() => {
       const delta = Math.random() > 0.5 ? 1 : -1;
       const current = parseInt(mastersEl.textContent, 10);

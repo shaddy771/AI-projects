@@ -393,6 +393,22 @@ BLOG_CONTENT = {
 }
 
 
+def feedback_form_section() -> str:
+    return """  <section class="feedback-form" id="feedback" aria-label="Обратная связь">
+    <div class="container">
+      <form class="feedback-form__inner form" id="feedback-form" action="#" method="post">
+        <p class="feedback-form__hint">Неудобно звонить? Оставьте номер — перезвоним в течение нескольких минут</p>
+        <div class="feedback-form__row">
+          <input class="feedback-form__input form__input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" aria-label="Ваше имя">
+          <input class="feedback-form__input form__input" type="tel" name="phone" placeholder="+375 (__) ___-__-__" required autocomplete="tel" aria-label="Телефон">
+          <button type="submit" class="feedback-form__submit btn btn--sm">Перезвоните мне</button>
+        </div>
+        <p class="feedback-form__privacy">Отправляя форму, вы соглашаетесь с <a href="/#privacy">политикой конфиденциальности</a></p>
+      </form>
+    </div>
+  </section>"""
+
+
 def float_cta() -> str:
     return f"""  <div class="float-cta" aria-label="Мессенджеры и звонок">
     <a href="{TELEGRAM_URL}" class="float-cta__btn float-cta__tg" aria-label="Telegram" rel="noopener" data-social="telegram">{SOCIAL_SVG["telegram"]}</a>
@@ -401,18 +417,7 @@ def float_cta() -> str:
     <a href="tel:{PHONE_TEL}" class="float-cta__btn float-cta__call" aria-label="Позвонить" data-social="phone">{SOCIAL_SVG["phone"]}</a>
   </div>
   <div class="mobile-bar"><a href="tel:{PHONE_TEL}" class="mobile-bar__call">Позвонить: {PHONE}</a></div>
-  <dialog class="modal" id="callback-modal" aria-labelledby="modal-title">
-    <div class="modal__content">
-      <button class="modal__close" aria-label="Закрыть">&times;</button>
-      <h2 id="modal-title">Заказать звонок</h2>
-      <form class="form" id="modal-form" action="#" method="post">
-        <input class="form__input" type="text" name="name" placeholder="Ваше имя" required>
-        <input class="form__input" type="tel" name="phone" placeholder="+375 (__) ___-__-__" required>
-        <button type="submit" class="btn btn--primary btn--full">Жду звонка</button>
-      </form>
-    </div>
-  </dialog>
-  <div class="toast" id="toast" role="alert" hidden><p>Заявка отправлена!</p></div>
+  <div class="toast" id="toast" role="alert" hidden><p>Заявка отправлена! Перезвоним в течение нескольких минут.</p></div>
   <script src="/js/main.min.js" defer></script>"""
 
 

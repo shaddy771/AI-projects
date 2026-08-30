@@ -35,6 +35,7 @@ from shared import (  # noqa: E402
     blog_article_schema,
     city_schema,
     combo_schema,
+    feedback_form_section,
     float_cta,
     img_tag,
     service_card_html,
@@ -149,7 +150,6 @@ def page_shell(title, description, keywords, canonical, breadcrumb, body, schema
 {header_nav()}
       <div class="header__actions">
         <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
-        <button class="btn btn--primary btn--sm header__callback" data-modal="callback">Заказать звонок</button>
         <button class="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -162,6 +162,7 @@ def page_shell(title, description, keywords, canonical, breadcrumb, body, schema
     <nav class="breadcrumb container" aria-label="Хлебные крошки">{breadcrumb}</nav>
 {body}
   </main>
+{feedback_form_section()}
 {footer_block()}
 {float_cta()}
 </body>
@@ -191,7 +192,7 @@ def render_city_enriched(city: dict) -> str:
           <p class="hero__subtitle">Аварийное вскрытие дверей, авто и сейфов в {prep}. Без повреждений, честные цены.</p>
           <div class="hero__cta">
             <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить</a>
-            <button class="btn btn--outline btn--lg" data-modal="callback">Заказать звонок</button>
+            <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
 {social_bar()}
         </div>

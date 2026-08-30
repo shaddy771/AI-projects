@@ -11,6 +11,7 @@ from shared import (  # noqa: F401
     WHATSAPP_URL,
     VIBER_URL,
     ai_head_meta,
+    feedback_form_section,
     float_cta,
     service_card_html,
     service_page_schema,
@@ -200,7 +201,6 @@ def render_city(city: dict) -> str:
 {header_nav()}
       <div class="header__actions">
         <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
-        <button class="btn btn--primary btn--sm header__callback" data-modal="callback">Заказать звонок</button>
         <button class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -225,7 +225,7 @@ def render_city(city: dict) -> str:
           <p class="hero__subtitle">{local}</p>
           <div class="hero__cta">
             <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить: {PHONE}</a>
-            <button class="btn btn--outline btn--lg" data-modal="callback">Заказать звонок</button>
+            <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
           <div class="hero__trust">
             <div class="trust-item"><strong>4.9</strong><span>847 отзывов</span></div>
@@ -305,6 +305,7 @@ def render_city(city: dict) -> str:
     </section>
   </main>
 
+{feedback_form_section()}
 {footer_block()}
 {float_cta()}
 </body>
@@ -468,7 +469,6 @@ def render_services() -> dict:
 {header_nav()}
       <div class="header__actions">
         <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
-        <button class="btn btn--primary btn--sm header__callback" data-modal="callback">Заказать звонок</button>
         <button class="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -488,7 +488,7 @@ def render_services() -> dict:
           <p class="hero__subtitle">{s["desc"]}</p>
           <div class="hero__cta">
             <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить: {PHONE}</a>
-            <button class="btn btn--outline btn--lg" data-modal="callback">Бесплатная консультация</button>
+            <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
         </div>
       </div>
@@ -545,6 +545,7 @@ def render_services() -> dict:
     </section>
   </main>
 
+{feedback_form_section()}
 {footer_block()}
 {float_cta()}
 </body>

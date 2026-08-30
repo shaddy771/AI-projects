@@ -139,7 +139,6 @@
       </nav>
       <div class="header__actions">
         <a href="tel:+375447913941" class="header__phone"><span>+375 (44) 791-39-41</span></a>
-        <button class="btn btn--primary btn--sm header__callback" data-modal="callback">Заказать звонок</button>
         <button class="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -184,6 +183,19 @@
     </section>
     <section class="cta-section"><div class="container cta-section__inner"><div><h2>Ремонт замков в Мстиславле</h2></div><a href="tel:+375447913941" class="btn btn--white btn--lg">+375 (44) 791-39-41</a></div></section>
   </main>
+  <section class="feedback-form" id="feedback" aria-label="Обратная связь">
+    <div class="container">
+      <form class="feedback-form__inner form" id="feedback-form" action="#" method="post">
+        <p class="feedback-form__hint">Неудобно звонить? Оставьте номер — перезвоним в течение нескольких минут</p>
+        <div class="feedback-form__row">
+          <input class="feedback-form__input form__input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" aria-label="Ваше имя">
+          <input class="feedback-form__input form__input" type="tel" name="phone" placeholder="+375 (__) ___-__-__" required autocomplete="tel" aria-label="Телефон">
+          <button type="submit" class="feedback-form__submit btn btn--sm">Перезвоните мне</button>
+        </div>
+        <p class="feedback-form__privacy">Отправляя форму, вы соглашаетесь с <a href="/#privacy">политикой конфиденциальности</a></p>
+      </form>
+    </div>
+  </section>
   <footer class="footer">
     <div class="container footer__inner">
       <div class="footer__brand">
@@ -234,18 +246,7 @@
     <a href="tel:+375447913941" class="float-cta__btn float-cta__call" aria-label="Позвонить" data-social="phone"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke="currentColor" stroke-width="2"/></svg></a>
   </div>
   <div class="mobile-bar"><a href="tel:+375447913941" class="mobile-bar__call">Позвонить: +375 (44) 791-39-41</a></div>
-  <dialog class="modal" id="callback-modal" aria-labelledby="modal-title">
-    <div class="modal__content">
-      <button class="modal__close" aria-label="Закрыть">&times;</button>
-      <h2 id="modal-title">Заказать звонок</h2>
-      <form class="form" id="modal-form" action="#" method="post">
-        <input class="form__input" type="text" name="name" placeholder="Ваше имя" required>
-        <input class="form__input" type="tel" name="phone" placeholder="+375 (__) ___-__-__" required>
-        <button type="submit" class="btn btn--primary btn--full">Жду звонка</button>
-      </form>
-    </div>
-  </dialog>
-  <div class="toast" id="toast" role="alert" hidden><p>Заявка отправлена!</p></div>
+  <div class="toast" id="toast" role="alert" hidden><p>Заявка отправлена! Перезвоним в течение нескольких минут.</p></div>
   <script src="/js/main.min.js" defer></script>
 </body>
 </html>
