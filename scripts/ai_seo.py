@@ -18,6 +18,7 @@ from shared import (  # noqa: E402
     SERVICE_COMBOS,
     TELEGRAM_URL,
     WHATSAPP_URL,
+    VIBER_URL,
 )
 
 FAQ_GLOBAL = [
@@ -50,6 +51,7 @@ def generate_llms_txt() -> str:
         "## Контакты",
         f"- Телефон: [{PHONE}](tel:{PHONE_TEL})",
         f"- Telegram: {TELEGRAM_URL}",
+        f"- Viber: {VIBER_URL}",
         f"- WhatsApp: {WHATSAPP_URL}",
         f"- Email: {EMAIL}",
         f"- Сайт: {DOMAIN}/",
@@ -94,6 +96,7 @@ def generate_llms_full_txt() -> str:
         "## Контакты",
         f"- Телефон: {PHONE} ({PHONE_TEL})",
         f"- Telegram: {TELEGRAM_URL}",
+        f"- Viber: {VIBER_URL}",
         f"- WhatsApp: {WHATSAPP_URL}",
         f"- Email: {EMAIL}",
         f"- Координаты: 53.8945, 30.3307 (Могилёв)",

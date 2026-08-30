@@ -21,8 +21,10 @@ from generate_pages import (  # noqa: E402
 )
 from articles import (  # noqa: E402
     BLOG_PER_PAGE,
+    load_articles,
     published_articles,
     paginate_articles,
+    save_articles,
 )
 from shared import (  # noqa: E402
     BLOG_CONTENT,
@@ -37,6 +39,7 @@ from shared import (  # noqa: E402
     combo_schema,
     feedback_form_section,
     float_cta,
+    header_phone_link,
     img_tag,
     service_card_html,
     social_bar,
@@ -114,7 +117,6 @@ def city_local_html(city: dict) -> str:
           <h2>Районы обслуживания в {prep}</h2>
           <p>Выезжаем во все части города: <strong>{districts}</strong>.</p>
           <p>Частые вызовы рядом с: {landmarks}.</p>
-          <p>{city["local"]}</p>
           <div class="local-info__links">
             <a href="/uslugi/vskrytie-avto-{city["slug"]}.html">Вскрытие авто в {prep}</a> ·
             <a href="/uslugi/remont-zamkov-{city["slug"]}.html">Ремонт замков</a> ·
@@ -128,7 +130,7 @@ def city_local_html(city: dict) -> str:
     </section>"""
 
 
-def page_shell(title, description, keywords, canonical, breadcrumb, body, schema_json=None, og_image="og-cover.jpg") -> str:
+def page_shell(title, description, keywords, canonical, breadcrumb, body, schema_json=None, og_image="og-cover.jpg", page_type="website", article_date=None) -> str:
     schema = f'  <script type="application/ld+json">\n  {schema_json}\n  </script>\n' if schema_json else ""
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -139,26 +141,26 @@ def page_shell(title, description, keywords, canonical, breadcrumb, body, schema
   <meta name="description" content="{description}">
   <meta name="keywords" content="{keywords}">
   <link rel="canonical" href="{canonical}">
-{ai_head_meta(title, description, canonical, og_image)}
+{ai_head_meta(title, description, canonical, og_image, page_type, article_date)}
 {HEAD_ASSETS}
 {schema}
 </head>
 <body>
+  <a href="#main" class="skip-link">Перейти к содержимому</a>
   <header class="header" id="header">
     <div class="container header__inner">
       <a href="/" class="logo"><span class="logo__text">Замок<span class="logo__accent">Сервис</span></span></a>
 {header_nav()}
       <div class="header__actions">
-        <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
+        {header_phone_link()}
         <button class="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
     <nav class="mobile-menu" id="mobile-menu" hidden><ul>
 {mobile_nav()}
-        <li><a href="/blog/">Блог</a></li>
     </ul></nav>
   </header>
-  <main>
+  <main id="main">
     <nav class="breadcrumb container" aria-label="Хлебные крошки">{breadcrumb}</nav>
 {body}
   </main>
@@ -191,7 +193,7 @@ def render_city_enriched(city: dict) -> str:
           <h1>Вскрытие замков в <span class="text-accent">{prep}</span></h1>
           <p class="hero__subtitle">Аварийное вскрытие дверей, авто и сейфов в {prep}. Без повреждений, честные цены.</p>
           <div class="hero__cta">
-            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить сейчас</a>
             <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
 {social_bar()}
@@ -356,15 +358,17 @@ def render_blog_post(post: dict) -> str:
         post["desc"],
         keywords,
         canonical,
-        f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → {post["title"][:40]}',
+        f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → <span class="breadcrumb__current">{post["title"]}</span>',
         body,
         schema,
         f"{post['img']}.webp",
+        page_type="article",
+        article_date=post["date"],
     )
 
 
 def generate_sitemap() -> str:
-    urls = [("", "weekly", "1.0"), ("/blog/", "weekly", "0.85"), ("/llms.txt", "monthly", "0.5"), ("/llms-full.txt", "monthly", "0.5")]
+    urls = [("/", "weekly", "1.0"), ("/blog/", "weekly", "0.85"), ("/privacy.html", "yearly", "0.3"), ("/llms.txt", "monthly", "0.5"), ("/llms-full.txt", "monthly", "0.5")]
     for s in ("vskrytie-avto", "remont-zamkov", "zamena-zamkov"):
         urls.append((f"/{s}.html", "monthly", "0.9"))
     for c in CITIES:
@@ -385,11 +389,30 @@ def generate_sitemap() -> str:
     return "\n".join(lines) + "\n"
 
 
+def refresh_article_metadata() -> None:
+    """Update FAQ and keywords for all stored articles."""
+    from seed_articles import LEGACY_FAQ, build_faq  # noqa: WPS433
+
+    articles = load_articles()
+    for article in articles:
+        slug = article["slug"]
+        if slug in LEGACY_FAQ:
+            article["faq"] = LEGACY_FAQ[slug]
+        else:
+            city = next((c for c in CITIES if c["slug"] == article.get("city")), None)
+            article["faq"] = build_faq(article["title"], city)
+        if not article.get("keywords") or article["keywords"].startswith("замки могилёв, chto"):
+            article["keywords"] = article.get("desc", "замки могилёв")[:120]
+    save_articles(articles)
+
+
 def main():
     uslugi = ROOT / "uslugi"
     uslugi.mkdir(exist_ok=True)
     blog = ROOT / "blog"
     blog.mkdir(exist_ok=True)
+
+    refresh_article_metadata()
 
     for city in CITIES:
         if city["slug"] == "mogilev":
@@ -404,13 +427,6 @@ def main():
         print(f"Combo: {svc} x {len(CITIES)} cities")
 
     for slug, html in render_services().items():
-        img_name = combo_hero_image(slug)
-        photo = f'        <figure class="hero__photo">{img_tag(img_name, SERVICE_COMBOS.get(slug, {}).get("title_short", slug), 360, 270, "eager")}</figure>\n'
-        html = html.replace(
-            "          </div>\n        </div>\n      </div>\n    </section>\n\n    <section class=\"section\">",
-            "          </div>\n" + photo + "        </div>\n      </div>\n    </section>\n\n    <section class=\"section\">",
-            1,
-        )
         html = html.replace('href="/css/style.css"', 'href="/css/style.min.css"')
         html = html.replace('<link rel="preconnect" href="https://fonts.googleapis.com">', '')
         html = html.replace('<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>', '')

@@ -1,7 +1,6 @@
 (function () {
   'use strict';
 
-  // Header scroll shadow
   const header = document.getElementById('header');
   if (header) {
     window.addEventListener('scroll', () => {
@@ -9,9 +8,13 @@
     }, { passive: true });
   }
 
-  // Mobile menu
   const burger = document.querySelector('.burger');
   const mobileMenu = document.getElementById('mobile-menu');
+  function closeMobileMenu() {
+    if (!burger || !mobileMenu) return;
+    burger.setAttribute('aria-expanded', 'false');
+    mobileMenu.hidden = true;
+  }
   if (burger && mobileMenu) {
     burger.addEventListener('click', () => {
       const expanded = burger.getAttribute('aria-expanded') === 'true';
@@ -19,14 +22,13 @@
       mobileMenu.hidden = expanded;
     });
     mobileMenu.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        burger.setAttribute('aria-expanded', 'false');
-        mobileMenu.hidden = true;
-      });
+      link.addEventListener('click', closeMobileMenu);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMobileMenu();
     });
   }
 
-  // Phone mask
   function formatPhone(value) {
     const digits = value.replace(/\D/g, '');
     let formatted = '+375 ';
@@ -53,7 +55,6 @@
     });
   });
 
-  // Form submission
   const toast = document.getElementById('toast');
   function showToast() {
     if (!toast) return;
@@ -62,13 +63,16 @@
   }
 
   const feedbackForm = document.getElementById('feedback-form');
+  const feedbackError = document.getElementById('feedback-error');
   feedbackForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const phone = feedbackForm.querySelector('[name="phone"]')?.value || '';
     if (phone.replace(/\D/g, '').length < 12) {
-      alert('Пожалуйста, введите корректный номер телефона');
+      if (feedbackError) feedbackError.hidden = false;
+      feedbackForm.querySelector('[name="phone"]')?.focus();
       return;
     }
+    if (feedbackError) feedbackError.hidden = true;
     if (typeof gtag === 'function') {
       gtag('event', 'generate_lead', { event_category: 'form', event_label: 'feedback-form' });
     }
@@ -79,7 +83,6 @@
     showToast();
   });
 
-  // Dynamic masters count (social proof)
   const mastersEl = document.getElementById('masters-count');
   if (mastersEl) {
     setInterval(() => {
@@ -102,7 +105,6 @@
     link.addEventListener('click', () => trackEvent('social_' + link.dataset.social));
   });
 
-  // Smooth scroll for anchor links
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
       const target = document.querySelector(anchor.getAttribute('href'));

@@ -140,7 +140,7 @@ table { border-collapse: collapse; width: 100%; }
   gap: 28px;
 }
 .nav__list a {
-  font-weight: 500;
+  font-weight: 600;
   font-size: 15px;
   color: var(--color-text-muted);
   transition: color var(--transition);
@@ -164,7 +164,11 @@ table { border-collapse: collapse; width: 100%; }
   display: none;
   flex-direction: column;
   gap: 5px;
-  padding: 4px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
 }
 .burger span {
   display: block;
@@ -338,6 +342,12 @@ table { border-collapse: collapse; width: 100%; }
   margin-top: 12px;
 }
 .form__note a { color: var(--color-primary); text-decoration: underline; }
+.form__error {
+  font-size: 13px;
+  color: #c0392b;
+  text-align: center;
+  margin-top: 8px;
+}
 
 /* ===== Feedback form (footer) ===== */
 .feedback-form {
@@ -366,7 +376,8 @@ table { border-collapse: collapse; width: 100%; }
   flex: 1 1 140px;
   max-width: 200px;
   margin-bottom: 0 !important;
-  padding: 8px 12px;
+  padding: 10px 12px;
+  min-height: 44px;
   font-size: 14px;
   border-color: #e2e8f0;
   background: #fff;
@@ -382,6 +393,8 @@ table { border-collapse: collapse; width: 100%; }
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
+  min-height: 44px;
+  padding: 10px 16px;
 }
 .feedback-form__submit:hover {
   border-color: var(--color-text-muted);
@@ -389,7 +402,7 @@ table { border-collapse: collapse; width: 100%; }
   background: #fff;
 }
 .feedback-form__privacy {
-  font-size: 11px;
+  font-size: 12px;
   color: #9aa5b4;
   text-align: center;
   margin-top: 8px;
@@ -397,6 +410,16 @@ table { border-collapse: collapse; width: 100%; }
 .feedback-form__privacy a {
   color: inherit;
   text-decoration: underline;
+  padding: 4px 0;
+}
+
+.breadcrumb__current {
+  display: inline-block;
+  max-width: min(100%, 280px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
 }
 
 /* ===== Urgency bar ===== */
@@ -557,6 +580,10 @@ table { border-collapse: collapse; width: 100%; }
 /* ===== Price table ===== */
 .price-table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding-bottom: 4px;
+}
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   margin-bottom: 32px;
@@ -1127,10 +1154,12 @@ table { border-collapse: collapse; width: 100%; }
   .cta-section__inner { flex-direction: column; text-align: center; }
   .footer__inner { grid-template-columns: 1fr; }
   .mobile-bar { display: block; }
-  .float-cta { bottom: 72px; }
-  body { padding-bottom: 56px; }
+  .float-cta { display: none; }
+  body { padding-bottom: 72px; }
+  .footer { padding-bottom: 16px; }
   .hero__cta { flex-direction: column; }
-  .hero__cta .btn { width: 100%; }
+  .hero__cta .btn { width: 100%; white-space: normal; }
+  .mobile-bar__call { font-size: 15px; }
   .feedback-form__row { flex-direction: column; }
   .feedback-form__input { max-width: 100%; width: 100%; }
   .feedback-form__submit { width: 100%; }

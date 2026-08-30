@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
 
 # AI search crawlers — разрешено для индексации в AI-поиске
 User-agent: GPTBot

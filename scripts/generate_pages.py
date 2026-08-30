@@ -13,6 +13,8 @@ from shared import (  # noqa: F401
     ai_head_meta,
     feedback_form_section,
     float_cta,
+    header_phone_link,
+    img_tag,
     service_card_html,
     service_page_schema,
     SERVICE_IMAGES,
@@ -73,6 +75,7 @@ def mobile_nav() -> str:
         <li><a href="/remont-zamkov.html">Ремонт замков</a></li>
         <li><a href="/zamena-zamkov.html">Замена замков</a></li>
         <li><a href="/#areas">Города</a></li>
+        <li><a href="/blog/">Блог</a></li>
         <li><a href="tel:{PHONE_TEL}" class="mobile-menu__phone">{PHONE}</a></li>"""
 
 
@@ -200,7 +203,7 @@ def render_city(city: dict) -> str:
       </a>
 {header_nav()}
       <div class="header__actions">
-        <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
+        {header_phone_link()}
         <button class="burger" aria-label="Открыть меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -224,7 +227,7 @@ def render_city(city: dict) -> str:
           <p class="hero__subtitle">Срочное аварийное вскрытие дверей, автомобилей и сейфов в {prep} и {gen}. Без повреждений, круглосуточно, честные цены до начала работ.</p>
           <p class="hero__subtitle">{local}</p>
           <div class="hero__cta">
-            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить: {PHONE}</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить сейчас</a>
             <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
           <div class="hero__trust">
@@ -440,6 +443,7 @@ def render_services() -> dict:
             service_card_html(name, price, img, desc, f"tel:{PHONE_TEL}", "Вызвать мастера →")
             for name, price, desc in s["items"]
         )
+        hero_photo = img_tag(img, s["h1"], 360, 270, "eager")
         city_links = "\n".join(
             f'          <a href="{"/" if c["slug"] == "mogilev" else "/" + c["file"]}" class="area-card"><h3>{c["name"]}</h3><span>{c["time"]}</span></a>'
             for c in CITIES
@@ -468,7 +472,7 @@ def render_services() -> dict:
       <a href="/" class="logo"><span class="logo__text">Замок<span class="logo__accent">Сервис</span></span></a>
 {header_nav()}
       <div class="header__actions">
-        <a href="tel:{PHONE_TEL}" class="header__phone"><span>{PHONE}</span></a>
+        {header_phone_link()}
         <button class="burger" aria-label="Меню" aria-expanded="false" aria-controls="mobile-menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -487,10 +491,11 @@ def render_services() -> dict:
           <h1>{s["h1"]} <span class="text-accent">{s["h1accent"]}</span></h1>
           <p class="hero__subtitle">{s["desc"]}</p>
           <div class="hero__cta">
-            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить: {PHONE}</a>
+            <a href="tel:{PHONE_TEL}" class="btn btn--primary btn--lg btn--pulse">Позвонить сейчас</a>
             <a href="#feedback" class="btn btn--outline btn--lg">Оставить номер</a>
           </div>
         </div>
+        <figure class="hero__photo">{hero_photo}</figure>
       </div>
     </section>
 

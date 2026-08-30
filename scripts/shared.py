@@ -13,6 +13,32 @@ TELEGRAM_URL = "https://t.me/zamokservice_mogilev"
 VIBER_URL = f"viber://chat?number={PHONE_VIBER}"
 WHATSAPP_URL = f"https://wa.me/{PHONE_VIBER}"
 
+PHONE_ICON_SVG = (
+    '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">'
+    '<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 '
+    '19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11'
+    'L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" '
+    'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+)
+
+CITY_COORDS = {
+    "mogilev": (53.8945, 30.3307),
+    "bobruisk": (53.1384, 29.2214),
+    "gorki": (54.2862, 30.9965),
+    "osipovichi": (53.3017, 28.6376),
+    "krichev": (53.7069, 31.7158),
+    "byhov": (53.5167, 30.2453),
+    "kostyukovichi": (53.3358, 32.0519),
+    "klimovichi": (53.6078, 31.9597),
+    "shklov": (54.2117, 30.2878),
+    "chausy": (53.6006, 30.8497),
+    "mstislavl": (54.0175, 31.7206),
+    "krugloe": (54.2444, 29.7736),
+    "glusk": (52.5556, 28.3958),
+    "belynichi": (53.9972, 29.7069),
+    "kirovsk": (53.2722, 29.4750),
+}
+
 HEAD_ASSETS = """  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/style.min.css">"""
@@ -22,23 +48,33 @@ def strip_html(text: str) -> str:
     return re.sub(r"<[^>]+>", "", text)
 
 
-def ai_head_meta(title: str, description: str, canonical: str, og_image: str = "og-cover.jpg") -> str:
+def ai_head_meta(
+    title: str,
+    description: str,
+    canonical: str,
+    og_image: str = "og-cover.jpg",
+    page_type: str = "website",
+    article_date: str | None = None,
+) -> str:
     """Meta tags and links for AI search engines and LLM crawlers."""
     img_url = f"{DOMAIN}/images/{og_image}" if not og_image.startswith("http") else og_image
     safe_desc = description.replace('"', "&quot;")
     safe_title = title.replace('"', "&quot;")
+    article_meta = ""
+    if page_type == "article" and article_date:
+        article_meta = f'\n  <meta property="article:published_time" content="{article_date}">'
     return f"""  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="author" content="ЗамокСервис Могилёв">
   <meta name="abstract" content="{safe_desc[:200]}">
   <link rel="alternate" type="text/plain" href="{DOMAIN}/llms.txt" title="LLMs.txt — информация для AI-поиска">
   <link rel="alternate" type="text/plain" href="{DOMAIN}/llms-full.txt" title="Полная информация для AI-поиска">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{page_type}">
   <meta property="og:locale" content="ru_BY">
   <meta property="og:title" content="{safe_title[:70]}">
   <meta property="og:description" content="{safe_desc[:200]}">
   <meta property="og:url" content="{canonical}">
   <meta property="og:site_name" content="ЗамокСервис Могилёв">
-  <meta property="og:image" content="{img_url}">
+  <meta property="og:image" content="{img_url}">{article_meta}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{safe_title[:70]}">
   <meta name="twitter:description" content="{safe_desc[:200]}">
@@ -121,8 +157,11 @@ def breadcrumb_schema(items: list[tuple[str, str]]) -> dict:
     }
 
 
-def business_node(city_name: str | None = None) -> dict:
-    name = f"ЗамокСервис — {city_name}" if city_name else "ЗамокСервис Могилёв"
+def business_node(city: dict | None = None) -> dict:
+    city_name = city["name"] if city else "Могилёв"
+    slug = city["slug"] if city else "mogilev"
+    lat, lng = CITY_COORDS.get(slug, (53.8945, 30.3307))
+    name = f"ЗамокСервис — {city_name}" if city else "ЗамокСервис Могилёв"
     return {
         "@type": "Locksmith",
         "@id": f"{DOMAIN}/#business",
@@ -136,25 +175,25 @@ def business_node(city_name: str | None = None) -> dict:
         "image": f"{DOMAIN}/images/og-cover.jpg",
         "address": {
             "@type": "PostalAddress",
-            "addressLocality": city_name or "Могилёв",
+            "addressLocality": city_name,
             "addressRegion": "Могилёвская область",
             "addressCountry": "BY",
         },
-        "geo": {"@type": "GeoCoordinates", "latitude": 53.8945, "longitude": 30.3307},
+        "geo": {"@type": "GeoCoordinates", "latitude": lat, "longitude": lng},
         "openingHoursSpecification": {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
             "opens": "00:00",
             "closes": "23:59",
         },
-        "sameAs": [TELEGRAM_URL, WHATSAPP_URL],
+        "sameAs": [TELEGRAM_URL, VIBER_URL, WHATSAPP_URL],
     }
 
 
 def city_schema(city: dict, canonical: str, faq_items: list[tuple[str, str]]) -> str:
     name, prep, time = city["name"], city["prep"], city["time"]
     graph = [
-        {**business_node(name), "@id": f"{canonical}#business", "areaServed": name},
+        {**business_node(city), "@id": f"{canonical}#business", "areaServed": {"@type": "City", "name": name}},
         {
             "@type": "WebPage",
             "@id": f"{canonical}#webpage",
@@ -182,7 +221,7 @@ def combo_schema(service_slug: str, city: dict, canonical: str) -> str:
             "@id": f"{canonical}#service",
             "name": f"{svc['h1']} в {prep}",
             "description": svc["desc"],
-            "provider": business_node(name),
+            "provider": business_node(city),
             "areaServed": {"@type": "City", "name": name},
             "image": f"{DOMAIN}/images/{img}.webp",
             "offers": {
@@ -231,7 +270,7 @@ def blog_article_schema(post: dict, canonical: str) -> str:
         breadcrumb_schema([
             ("Главная", DOMAIN + "/"),
             ("Блог", DOMAIN + "/blog/"),
-            (post["title"][:50], canonical),
+            (post["title"], canonical),
         ]),
     ]
     faq = post.get("faq")
@@ -351,7 +390,7 @@ BLOG_CONTENT = {
 <h2>2. Смазка механизма</h2>
 <p>Иногда помогает графитовая смазка в замочную щель. Не используйте WD-40 для морозостойких замков зимой без последующей просушки.</p>
 <h2>3. Проверьте дверь</h2>
-<p>Дверь могла просесть и перекашивать замок. Попробуйte прижать дверь к раме и повернуть ключ.</p>
+<p>Дверь могла просесть и перекашивать замок. Попробуйте прижать дверь к раме и повернуть ключ.</p>
 <h2>4. Вызовите мастера</h2>
 <p>Если замок не открывается 5–10 минут — звоните. Профессиональное вскрытие в Могилёве стоит от 30 BYN и занимает 10–20 минут.</p>
 <p><a href="tel:{PHONE_TEL}">Позвонить мастеру: {PHONE}</a></p>""".format(PHONE_TEL=PHONE_TEL, PHONE=PHONE),
@@ -393,17 +432,25 @@ BLOG_CONTENT = {
 }
 
 
+def header_phone_link() -> str:
+    return (
+        f'<a href="tel:{PHONE_TEL}" class="header__phone" aria-label="Позвонить: {PHONE}">'
+        f"{PHONE_ICON_SVG}<span>{PHONE}</span></a>"
+    )
+
+
 def feedback_form_section() -> str:
     return """  <section class="feedback-form" id="feedback" aria-label="Обратная связь">
     <div class="container">
-      <form class="feedback-form__inner form" id="feedback-form" action="#" method="post">
+      <form class="feedback-form__inner form" id="feedback-form" action="#" method="post" novalidate>
         <p class="feedback-form__hint">Неудобно звонить? Оставьте номер — перезвоним в течение нескольких минут</p>
         <div class="feedback-form__row">
           <input class="feedback-form__input form__input" type="text" name="name" placeholder="Ваше имя" autocomplete="name" aria-label="Ваше имя">
           <input class="feedback-form__input form__input" type="tel" name="phone" placeholder="+375 (__) ___-__-__" required autocomplete="tel" aria-label="Телефон">
           <button type="submit" class="feedback-form__submit btn btn--sm">Перезвоните мне</button>
         </div>
-        <p class="feedback-form__privacy">Отправляя форму, вы соглашаетесь с <a href="/#privacy">политикой конфиденциальности</a></p>
+        <p class="form__error" id="feedback-error" hidden>Введите корректный номер телефона</p>
+        <p class="feedback-form__privacy">Отправляя форму, вы соглашаетесь с <a href="/privacy.html">политикой конфиденциальности</a></p>
       </form>
     </div>
   </section>"""
@@ -416,7 +463,7 @@ def float_cta() -> str:
     <a href="{WHATSAPP_URL}" class="float-cta__btn float-cta__wa" aria-label="WhatsApp" rel="noopener" data-social="whatsapp">{SOCIAL_SVG["whatsapp"]}</a>
     <a href="tel:{PHONE_TEL}" class="float-cta__btn float-cta__call" aria-label="Позвонить" data-social="phone">{SOCIAL_SVG["phone"]}</a>
   </div>
-  <div class="mobile-bar"><a href="tel:{PHONE_TEL}" class="mobile-bar__call">Позвонить: {PHONE}</a></div>
+  <div class="mobile-bar"><a href="tel:{PHONE_TEL}" class="mobile-bar__call">Позвонить сейчас</a></div>
   <div class="toast" id="toast" role="alert" hidden><p>Заявка отправлена! Перезвоним в течение нескольких минут.</p></div>
   <script src="/js/main.min.js" defer></script>"""
 
