@@ -783,8 +783,29 @@ table { border-collapse: collapse; width: 100%; }
 .breadcrumb a:hover { text-decoration: underline; }
 
 /* ===== Responsive ===== */
+.areas-grid--cities {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 @media (max-width: 1024px) {
-  .hero__inner { grid-template-columns: 1fr; }
+  .areas-grid--cities { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .areas-grid--cities { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 480px) {
+  .areas-grid--cities { grid-template-columns: 1fr; }
+}
+
+.service-card h3 a {
+  color: inherit;
+}
+.service-card h3 a:hover {
+  color: var(--color-primary);
+}
+
   .hero__card { max-width: 480px; }
   .services-grid { grid-template-columns: repeat(2, 1fr); }
   .features-grid { grid-template-columns: repeat(2, 1fr); }
