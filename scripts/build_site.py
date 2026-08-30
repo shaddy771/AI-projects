@@ -25,13 +25,45 @@ from shared import (  # noqa: E402
     CITY_EXTRA,
     HEAD_ASSETS,
     SERVICE_COMBOS,
+    SERVICE_IMAGES,
     float_cta,
     img_tag,
+    service_card_html,
     social_bar,
     TELEGRAM_URL,
     VIBER_URL,
     WHATSAPP_URL,
 )
+
+
+def combo_hero_image(service_slug: str) -> str:
+    return {
+        "vskrytie-avto": SERVICE_IMAGES["car"],
+        "remont-zamkov": SERVICE_IMAGES["repair"],
+        "zamena-zamkov": SERVICE_IMAGES["door"],
+    }.get(service_slug, SERVICE_IMAGES["master"])
+
+
+def city_services_html(slug: str, prep: str) -> str:
+    cards = [
+        service_card_html("Вскрытие дверей", "от 35 BYN", SERVICE_IMAGES["door"], link=f"tel:{PHONE_TEL}"),
+        service_card_html(
+            f'<a href="/uslugi/vskrytie-avto-{slug}.html">Вскрытие авто</a>',
+            "от 40 BYN",
+            SERVICE_IMAGES["car"],
+        ),
+        service_card_html(
+            f'<a href="/uslugi/zamena-zamkov-{slug}.html">Замена замков</a>',
+            "от 25 BYN",
+            SERVICE_IMAGES["replace"],
+        ),
+        service_card_html(
+            f'<a href="/uslugi/remont-zamkov-{slug}.html">Ремонт замков</a>',
+            "от 20 BYN",
+            SERVICE_IMAGES["repair"],
+        ),
+    ]
+    return "\n          ".join(cards)
 
 
 def city_faq_html(city: dict) -> str:
@@ -148,6 +180,7 @@ def render_city_enriched(city: dict) -> str:
           </div>
 {social_bar()}
         </div>
+        <figure class="hero__photo">{img_tag("master-work", f"Мастер ЗамокСервис — выезд в {prep}", 360, 270, "eager")}</figure>
       </div>
     </section>
 {city_local_html(city)}
@@ -155,10 +188,7 @@ def render_city_enriched(city: dict) -> str:
       <div class="container">
         <h2>Услуги в {prep}</h2>
         <div class="services-grid">
-          <article class="service-card"><h3>Вскрытие дверей</h3><p>от 35 BYN</p><a href="tel:{PHONE_TEL}" class="service-card__link">Вызвать →</a></article>
-          <article class="service-card"><h3><a href="/uslugi/vskrytie-avto-{slug}.html">Вскрытие авто</a></h3><p>от 40 BYN</p></article>
-          <article class="service-card"><h3><a href="/uslugi/zamena-zamkov-{slug}.html">Замена замков</a></h3><p>от 25 BYN</p></article>
-          <article class="service-card"><h3><a href="/uslugi/remont-zamkov-{slug}.html">Ремонт замков</a></h3><p>от 20 BYN</p></article>
+          {city_services_html(slug, prep)}
         </div>
       </div>
     </section>
@@ -206,7 +236,7 @@ def render_combo(service_slug: str, city: dict) -> str:
           </div>
 {social_bar()}
         </div>
-        <figure class="hero__photo">{img_tag("car-unlock" if service_slug == "vskrytie-avto" else "lock-repair", f"{svc['h1']} в {prep}", 360, 270, "eager")}</figure>
+        <figure class="hero__photo">{img_tag(combo_hero_image(service_slug), f"{svc['h1']} в {prep}", 360, 270, "eager")}</figure>
       </div>
     </section>
     <section class="section section--alt">
@@ -226,9 +256,11 @@ def render_combo(service_slug: str, city: dict) -> str:
 
 def render_blog_index() -> str:
     cards = "\n".join(
-        f'          <article class="blog-card"><time datetime="{p["date"]}">{p["date"]}</time>'
+        f'          <article class="blog-card">'
+        f'<a href="/blog/{p["slug"]}.html" class="blog-card__thumb">{img_tag(p["img"], p["title"], 480, 270)}</a>'
+        f'<div class="blog-card__body"><time datetime="{p["date"]}">{p["date"]}</time>'
         f'<h2><a href="/blog/{p["slug"]}.html">{p["title"]}</a></h2>'
-        f'<p>{p["desc"]}</p><span class="blog-card__read">{p["read"]}</span></article>'
+        f'<p>{p["desc"]}</p><span class="blog-card__read">{p["read"]}</span></div></article>'
         for p in BLOG_POSTS
     )
     body = f"""
@@ -247,6 +279,7 @@ def render_blog_post(post: dict) -> str:
     body = f"""
     <article class="section blog-article">
       <div class="container blog-article__inner">
+        <figure class="blog-article__cover">{img_tag(post["img"], post["title"], 720, 405, "eager")}</figure>
         <header><time datetime="{post["date"]}">{post["date"]}</time><h1>{post["title"]}</h1><p class="blog-article__lead">{post["desc"]}</p></header>
         <div class="blog-article__content">{content}</div>
         <div class="blog-article__cta"><a href="tel:{PHONE_TEL}" class="btn btn--primary">Вызвать мастера</a></div>
@@ -292,7 +325,7 @@ def main():
         print(f"Combo: {svc} x {len(CITIES)} cities")
 
     for slug, html in render_services().items():
-        img_name = "car-unlock" if slug == "vskrytie-avto" else "lock-repair"
+        img_name = combo_hero_image(slug)
         photo = f'        <figure class="hero__photo">{img_tag(img_name, SERVICE_COMBOS.get(slug, {}).get("title_short", slug), 360, 270, "eager")}</figure>\n'
         html = html.replace(
             "          </div>\n        </div>\n      </div>\n    </section>\n\n    <section class=\"section\">",

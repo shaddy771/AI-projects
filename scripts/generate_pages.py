@@ -3,7 +3,7 @@
 
 from pathlib import Path
 
-from shared import float_cta  # noqa: F401 — re-export for render_services
+from shared import float_cta, service_card_html, SERVICE_IMAGES  # noqa: F401 — re-export for render_services
 
 ROOT = Path(__file__).resolve().parent.parent
 DOMAIN = "https://vskrytie-zamkov-mogilev.by"
@@ -412,15 +412,19 @@ def render_services() -> dict:
     }
 
     result = {}
+    service_img = {
+        "vskrytie-avto": SERVICE_IMAGES["car"],
+        "remont-zamkov": SERVICE_IMAGES["repair"],
+        "zamena-zamkov": SERVICE_IMAGES["door"],
+    }
     for slug, s in services.items():
         faq_html = "\n".join(
             f'          <details class="faq-item"><summary>{q}</summary><p>{a}</p></details>'
             for q, a in s["faq"]
         )
+        img = service_img.get(slug, SERVICE_IMAGES["door"])
         items_html = "\n".join(
-            f'          <article class="service-card"><h3>{name}</h3><p>{desc}</p>'
-            f'<span class="service-card__price">{price}</span>'
-            f'<a href="tel:{PHONE_TEL}" class="service-card__link">Вызвать мастера →</a></article>'
+            service_card_html(name, price, img, desc, f"tel:{PHONE_TEL}", "Вызвать мастера →")
             for name, price, desc in s["items"]
         )
         city_links = "\n".join(
