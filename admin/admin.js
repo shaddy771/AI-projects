@@ -2,6 +2,15 @@ const $ = (s) => document.querySelector(s);
 const loginScreen = $("#login-screen");
 const app = $("#app");
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 async function api(path, opts = {}) {
   const res = await fetch(path, {
     headers: { "Content-Type": "application/json", ...(opts.headers || {}) },
@@ -29,6 +38,8 @@ $("#login-form").addEventListener("submit", async (e) => {
     loginScreen.hidden = true;
     app.hidden = false;
     loadAll();
+  } else if (res.status === 429) {
+    alert("Слишком много попыток. Подождите 5 минут.");
   } else {
     alert("Неверный пароль");
   }
@@ -65,7 +76,7 @@ $("#edit-form").addEventListener("submit", async (e) => {
     keywords: $("#edit-keywords").value,
     content: $("#edit-content").value,
   };
-  await api(`/api/articles/${slug}`, { method: "PATCH", body: JSON.stringify(body) });
+  await api(`/api/articles/${encodeURIComponent(slug)}`, { method: "PATCH", body: JSON.stringify(body) });
   $("#editor").hidden = true;
   loadArticles();
   loadStats();
@@ -77,10 +88,10 @@ async function loadStats() {
   const res = await api("/api/stats");
   const s = await res.json();
   $("#stats").innerHTML = `
-    <div class="stat"><div class="stat__num">${s.total}</div><div class="stat__label">Всего статей</div></div>
-    <div class="stat"><div class="stat__num">${s.published}</div><div class="stat__label">Опубликовано</div></div>
-    <div class="stat"><div class="stat__num">${s.scheduled}</div><div class="stat__label">Запланировано</div></div>
-    <div class="stat"><div class="stat__num">${s.next_publish || "—"}</div><div class="stat__label">След. публикация</div></div>`;
+    <div class="stat"><div class="stat__num">${escapeHtml(s.total)}</div><div class="stat__label">Всего статей</div></div>
+    <div class="stat"><div class="stat__num">${escapeHtml(s.published)}</div><div class="stat__label">Опубликовано</div></div>
+    <div class="stat"><div class="stat__num">${escapeHtml(s.scheduled)}</div><div class="stat__label">Запланировано</div></div>
+    <div class="stat"><div class="stat__num">${escapeHtml(s.next_publish || "—")}</div><div class="stat__label">След. публикация</div></div>`;
 }
 
 async function loadArticles() {
@@ -98,10 +109,10 @@ function renderArticles(list) {
     const cls = a.status === "published" ? "badge--pub" : a.status === "draft" ? "badge--draft" : "badge--sched";
     const label = a.status === "published" ? "Опубликовано" : a.status === "draft" ? "Черновик" : "Запланировано";
     return `<tr>
-      <td>${a.date}</td>
-      <td>${a.title}</td>
+      <td>${escapeHtml(a.date)}</td>
+      <td>${escapeHtml(a.title)}</td>
       <td><span class="badge ${cls}">${label}</span></td>
-      <td><button class="btn btn--sm" data-slug="${a.slug}">Изм.</button></td>
+      <td><button class="btn btn--sm" data-slug="${escapeHtml(a.slug)}">Изм.</button></td>
     </tr>`;
   }).join("");
   tbody.querySelectorAll("button[data-slug]").forEach((btn) => {
@@ -110,7 +121,7 @@ function renderArticles(list) {
 }
 
 async function openEditor(slug) {
-  const res = await api(`/api/articles/${slug}`);
+  const res = await api(`/api/articles/${encodeURIComponent(slug)}`);
   const a = await res.json();
   $("#edit-slug").value = a.slug;
   $("#edit-title").value = a.title;
