@@ -1,0 +1,134 @@
+(function () {
+  'use strict';
+
+  // Header scroll shadow
+  const header = document.getElementById('header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('header--scrolled', window.scrollY > 10);
+    }, { passive: true });
+  }
+
+  // Mobile menu
+  const burger = document.querySelector('.burger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', () => {
+      const expanded = burger.getAttribute('aria-expanded') === 'true';
+      burger.setAttribute('aria-expanded', !expanded);
+      mobileMenu.hidden = expanded;
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        burger.setAttribute('aria-expanded', 'false');
+        mobileMenu.hidden = true;
+      });
+    });
+  }
+
+  // Modal
+  const modal = document.getElementById('callback-modal');
+  const modalTriggers = document.querySelectorAll('[data-modal="callback"]');
+  const modalClose = modal?.querySelector('.modal__close');
+
+  modalTriggers.forEach(btn => {
+    btn.addEventListener('click', () => modal?.showModal());
+  });
+  modalClose?.addEventListener('click', () => modal?.close());
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) modal.close();
+  });
+
+  // Phone mask
+  function formatPhone(value) {
+    const digits = value.replace(/\D/g, '');
+    let formatted = '+375 ';
+    if (digits.length > 3) {
+      const code = digits.slice(3, 5);
+      formatted += '(' + code;
+      if (digits.length > 5) {
+        formatted += ') ' + digits.slice(5, 8);
+        if (digits.length > 8) {
+          formatted += '-' + digits.slice(8, 10);
+          if (digits.length > 10) {
+            formatted += '-' + digits.slice(10, 12);
+          }
+        }
+      }
+    }
+    return formatted.trim();
+  }
+
+  document.querySelectorAll('input[type="tel"]').forEach(input => {
+    input.addEventListener('input', () => {
+      const pos = input.selectionStart;
+      input.value = formatPhone(input.value);
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+  });
+
+  // Form submission
+  const toast = document.getElementById('toast');
+  function showToast() {
+    if (!toast) return;
+    toast.hidden = false;
+    setTimeout(() => { toast.hidden = true; }, 4000);
+  }
+
+  ['hero-form', 'modal-form'].forEach(id => {
+    const form = document.getElementById(id);
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const phone = form.querySelector('[name="phone"]')?.value || '';
+      if (phone.replace(/\D/g, '').length < 12) {
+        alert('Пожалуйста, введите корректный номер телефона');
+        return;
+      }
+      // Analytics placeholder — replace with real tracking
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', { event_category: 'form', event_label: id });
+      }
+      if (typeof ym === 'function') {
+        ym(/* YANDEX_METRIKA_ID */, 'reachGoal', 'lead_form');
+      }
+      form.reset();
+      modal?.close();
+      showToast();
+    });
+  });
+
+  // Dynamic masters count (social proof)
+  const mastersEl = document.getElementById('masters-count');
+  if (mastersEl) {
+    const base = 3;
+    setInterval(() => {
+      const delta = Math.random() > 0.5 ? 1 : -1;
+      const current = parseInt(mastersEl.textContent, 10);
+      const next = Math.max(2, Math.min(5, current + delta));
+      mastersEl.textContent = next;
+    }, 8000);
+  }
+
+  // Track phone clicks for conversion analytics
+  document.querySelectorAll('a[href^="tel:"]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (typeof gtag === 'function') {
+        gtag('event', 'phone_call', { event_category: 'conversion' });
+      }
+      if (typeof ym === 'function') {
+        ym(/* YANDEX_METRIKA_ID */, 'reachGoal', 'phone_call');
+      }
+    });
+  });
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  });
+})();
