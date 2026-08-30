@@ -1,4 +1,33 @@
 User-agent: *
 Allow: /
 
+# AI search crawlers — разрешено для индексации в AI-поиске
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
 Sitemap: https://vskrytie-zamkov-mogilev.by/sitemap.xml
+
+# Информация для AI-поиска
+# LLMs.txt: https://vskrytie-zamkov-mogilev.by/llms.txt
+# LLMs-full: https://vskrytie-zamkov-mogilev.by/llms-full.txt

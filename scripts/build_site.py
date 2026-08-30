@@ -26,6 +26,10 @@ from shared import (  # noqa: E402
     HEAD_ASSETS,
     SERVICE_COMBOS,
     SERVICE_IMAGES,
+    ai_head_meta,
+    blog_article_schema,
+    city_schema,
+    combo_schema,
     float_cta,
     img_tag,
     service_card_html,
@@ -66,14 +70,20 @@ def city_services_html(slug: str, prep: str) -> str:
     return "\n          ".join(cards)
 
 
-def city_faq_html(city: dict) -> str:
-    prep, gen, name, time = city["prep"], city["gen"], city["name"], city["time"]
-    items = [
+def city_faq_data(city: dict) -> list[tuple[str, str]]:
+    prep, gen, time = city["prep"], city["gen"], city["time"]
+    return [
         (f"Сколько стоит вскрытие замка в {prep}?", f"Стоимость от 30 BYN. Точная цена зависит от типа замка и времени вызова. Мастер называет сумму до начала работ в {prep}."),
         (f"Как быстро приедет мастер в {prep}?", f"Среднее время выезда по {gen} — {time}. Мастера дежурят в области для оперативного прибытия."),
         (f"Работаете ли вы в районах {gen}?", f"Да, выезжаем по всему {gen} и прилегающим населённым пунктам. Закрытые населённые пункты — уточняйте по телефону."),
     ]
-    return "\n".join(f'          <details class="faq-item"><summary>{q}</summary><p>{a}</p></details>' for q, a in items)
+
+
+def city_faq_html(city: dict) -> str:
+    return "\n".join(
+        f'          <details class="faq-item"><summary>{q}</summary><p>{a}</p></details>'
+        for q, a in city_faq_data(city)
+    )
 
 
 def city_review_html(city: dict) -> str:
@@ -112,7 +122,7 @@ def city_local_html(city: dict) -> str:
     </section>"""
 
 
-def page_shell(title, description, keywords, canonical, breadcrumb, body, schema_json=None) -> str:
+def page_shell(title, description, keywords, canonical, breadcrumb, body, schema_json=None, og_image="og-cover.jpg") -> str:
     schema = f'  <script type="application/ld+json">\n  {schema_json}\n  </script>\n' if schema_json else ""
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -122,8 +132,8 @@ def page_shell(title, description, keywords, canonical, breadcrumb, body, schema
   <title>{title}</title>
   <meta name="description" content="{description}">
   <meta name="keywords" content="{keywords}">
-  <meta name="robots" content="index, follow">
   <link rel="canonical" href="{canonical}">
+{ai_head_meta(title, description, canonical, og_image)}
 {HEAD_ASSETS}
 {schema}
 </head>
@@ -159,7 +169,7 @@ def render_city_enriched(city: dict) -> str:
     title = f"Вскрытие замков в {prep} — срочно 24/7 | ЗамокСервис"
     desc = f"Срочное вскрытие замков в {prep}. Выезд {time}, 24/7. Двери, авто, сейфы без повреждений. {PHONE}"
     kw = f"вскрытие замков {name.lower()}, замочный мастер {prep.lower()}"
-    schema = f'{{"@context":"https://schema.org","@type":"Locksmith","name":"ЗамокСервис — {name}","telephone":"{PHONE_TEL}","areaServed":"{name}"}}'
+    schema = city_schema(city, canonical, city_faq_data(city))
 
     combo_links = "\n".join(
         f'          <a href="/uslugi/{svc}-{slug}.html" class="service-card__link">{SERVICE_COMBOS[svc]["title_short"]} в {prep} →</a>'
@@ -250,8 +260,10 @@ def render_combo(service_slug: str, city: dict) -> str:
     </section>
     <section class="cta-section"><div class="container cta-section__inner"><div><h2>{svc['h1']} в {prep}</h2></div><a href="tel:{PHONE_TEL}" class="btn btn--white btn--lg">{PHONE}</a></div></section>"""
 
+    schema = combo_schema(service_slug, city, canonical)
+    hero_img = f"{combo_hero_image(service_slug)}.webp"
     bc = f'<a href="/">Главная</a> → <a href="/{service_slug}.html">{svc["title_short"]}</a> → {name}'
-    return page_shell(title, desc, kw, canonical, bc, body)
+    return page_shell(title, desc, kw, canonical, bc, body, schema, hero_img)
 
 
 def render_blog_index() -> str:
@@ -276,6 +288,8 @@ def render_blog_index() -> str:
 
 def render_blog_post(post: dict) -> str:
     content = BLOG_CONTENT.get(post["slug"], "<p>Статья в подготовке.</p>")
+    canonical = f"{DOMAIN}/blog/{post['slug']}.html"
+    schema = blog_article_schema(post, canonical)
     body = f"""
     <article class="section blog-article">
       <div class="container blog-article__inner">
@@ -285,11 +299,11 @@ def render_blog_post(post: dict) -> str:
         <div class="blog-article__cta"><a href="tel:{PHONE_TEL}" class="btn btn--primary">Вызвать мастера</a></div>
       </div>
     </article>"""
-    return page_shell(post["title"], post["desc"], "замки могилёв", f"{DOMAIN}/blog/{post['slug']}.html", f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → {post["title"][:40]}', body)
+    return page_shell(post["title"], post["desc"], "замки могилёв", canonical, f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → {post["title"][:40]}', body, schema, f"{post['img']}.webp")
 
 
 def generate_sitemap() -> str:
-    urls = [("", "weekly", "1.0"), ("/blog/", "weekly", "0.85")]
+    urls = [("", "weekly", "1.0"), ("/blog/", "weekly", "0.85"), ("/llms.txt", "monthly", "0.5"), ("/llms-full.txt", "monthly", "0.5")]
     for s in ("vskrytie-avto", "remont-zamkov", "zamena-zamkov"):
         urls.append((f"/{s}.html", "monthly", "0.9"))
     for c in CITIES:
@@ -348,6 +362,9 @@ def main():
 
     (ROOT / "sitemap.xml").write_text(generate_sitemap(), encoding="utf-8")
     print("Sitemap updated")
+
+    from ai_seo import main as ai_seo_main
+    ai_seo_main()
 
 
 if __name__ == "__main__":

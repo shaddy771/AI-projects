@@ -3,12 +3,18 @@
 
 from pathlib import Path
 
-from shared import float_cta, service_card_html, SERVICE_IMAGES  # noqa: F401 — re-export for render_services
+from shared import (  # noqa: F401
+    DOMAIN,
+    PHONE,
+    PHONE_TEL,
+    ai_head_meta,
+    float_cta,
+    service_card_html,
+    service_page_schema,
+    SERVICE_IMAGES,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
-DOMAIN = "https://vskrytie-zamkov-mogilev.by"
-PHONE = "+375 (29) 123-45-67"
-PHONE_TEL = "+375291234567"
 
 CITIES = [
     {"slug": "mogilev", "file": "mogilev.html", "name": "Могилёв", "prep": "Могилёве", "gen": "Могилёва", "time": "15–20 мин", "local": "Выезжаем во все микрорайоны Могилёва: от проспекта Мира до Пятого микрорайона, на заводской район и частный сектор."},
@@ -423,6 +429,9 @@ def render_services() -> dict:
             for q, a in s["faq"]
         )
         img = service_img.get(slug, SERVICE_IMAGES["door"])
+        canonical = f"{DOMAIN}/{slug}.html"
+        schema = service_page_schema(slug, s, canonical, s["faq"])
+        hero_img = f"{img}.webp"
         items_html = "\n".join(
             service_card_html(name, price, img, desc, f"tel:{PHONE_TEL}", "Вызвать мастера →")
             for name, price, desc in s["items"]
@@ -440,23 +449,13 @@ def render_services() -> dict:
   <title>{s["title"]}</title>
   <meta name="description" content="{s["desc"]} Звоните: {PHONE}">
   <meta name="keywords" content="{s["keywords"]}">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{DOMAIN}/{slug}.html">
-  <meta property="og:title" content="{s["title"][:70]}">
-  <meta property="og:url" content="{DOMAIN}/{slug}.html">
+  <link rel="canonical" href="{canonical}">
+{ai_head_meta(s["title"], s["desc"], canonical, hero_img)}
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/fonts.css">
+  <link rel="stylesheet" href="/css/style.min.css">
   <script type="application/ld+json">
-  {{
-    "@context": "https://schema.org",
-    "@type": "Service",
-    "name": "{s["schema_name"]}",
-    "description": "{s["desc"]}",
-    "provider": {{"@type": "Locksmith", "name": "ЗамокСервис Могилёв", "telephone": "{PHONE_TEL}"}},
-    "areaServed": "Могилёвская область",
-    "offers": {{"@type": "Offer", "price": "{s["price_from"].split()[0]}", "priceCurrency": "BYN"}}
-  }}
+  {schema}
   </script>
 </head>
 <body>

@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Shared HTML fragments and extended data for site generator."""
 
+import json
+import re
+
+DOMAIN = "https://vskrytie-zamkov-mogilev.by"
+EMAIL = "info@vskrytie-zamkov-mogilev.by"
 PHONE = "+375 (29) 123-45-67"
 PHONE_TEL = "+375291234567"
 PHONE_VIBER = "375291234567"
@@ -11,6 +16,37 @@ WHATSAPP_URL = f"https://wa.me/{PHONE_VIBER}"
 HEAD_ASSETS = """  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/css/fonts.css">
   <link rel="stylesheet" href="/css/style.min.css">"""
+
+
+def strip_html(text: str) -> str:
+    return re.sub(r"<[^>]+>", "", text)
+
+
+def ai_head_meta(title: str, description: str, canonical: str, og_image: str = "og-cover.jpg") -> str:
+    """Meta tags and links for AI search engines and LLM crawlers."""
+    img_url = f"{DOMAIN}/images/{og_image}" if not og_image.startswith("http") else og_image
+    safe_desc = description.replace('"', "&quot;")
+    safe_title = title.replace('"', "&quot;")
+    return f"""  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="author" content="ЗамокСервис Могилёв">
+  <meta name="abstract" content="{safe_desc[:200]}">
+  <link rel="alternate" type="text/plain" href="{DOMAIN}/llms.txt" title="LLMs.txt — информация для AI-поиска">
+  <link rel="alternate" type="text/plain" href="{DOMAIN}/llms-full.txt" title="Полная информация для AI-поиска">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ru_BY">
+  <meta property="og:title" content="{safe_title[:70]}">
+  <meta property="og:description" content="{safe_desc[:200]}">
+  <meta property="og:url" content="{canonical}">
+  <meta property="og:site_name" content="ЗамокСервис Могилёв">
+  <meta property="og:image" content="{img_url}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{safe_title[:70]}">
+  <meta name="twitter:description" content="{safe_desc[:200]}">
+  <meta name="twitter:image" content="{img_url}">"""
+
+
+def json_ld_script(data) -> str:
+    return f'  <script type="application/ld+json">\n  {json.dumps(data, ensure_ascii=False, indent=2)}\n  </script>'
 
 
 def img_tag(name: str, alt: str, width: int = 400, height: int = 300, loading: str = "lazy") -> str:
@@ -31,6 +67,199 @@ SERVICE_IMAGES = {
     "master": "master-work",
 }
 
+MAIN_PAGE_SERVICES = [
+    ("Вскрытие входных дверей", "от 35 BYN", "door-unlock",
+     "Металлические, бронированные и деревянные двери. Замки Cisa, Kale, Гардиан, Mottura и другие.",
+     "tel:{phone}", "Вызвать мастера →"),
+    ('<a href="/vskrytie-avto.html">Вскрытие автомобилей</a>', "от 40 BYN", "car-unlock",
+     "Открытие авто при захлопнутых ключах внутри. Все марки: Volkswagen, BMW, Mercedes, Lada и др.",
+     "/vskrytie-avto.html", "Подробнее →"),
+    ("Вскрытие сейфов", "от 60 BYN", "lock-repair",
+     "Мебельные, офисные и встроенные сейфы. Вскрытие с возможностью дальнейшего использования.",
+     "tel:{phone}", "Вызвать мастера →"),
+    ('<a href="/zamena-zamkov.html">Замена замков</a> · <a href="/remont-zamkov.html">Ремонт</a>', "от 25 BYN", "lock-repair",
+     "Установка новых замков, замена личинок, ремонт после взлома. Подбор надёжной фурнитуры.",
+     "/zamena-zamkov.html", "Подробнее →"),
+    ("Вскрытие квартир и офисов", "от 35 BYN", "door-unlock",
+     "Аварийное вскрытие при потере ключей, заклинивании замка или поломке механизма.",
+     "tel:{phone}", "Вызвать мастера →"),
+    ("Гаражи и навесные замки", "от 30 BYN", "door-unlock",
+     "Вскрытие гаражных ворот, подвалов, складов и навесных замков без повреждений.",
+     "tel:{phone}", "Вызвать мастера →"),
+]
+
+
+def main_services_html() -> str:
+    cards = []
+    for title, price, img, desc, link, label in MAIN_PAGE_SERVICES:
+        href = link.format(phone=PHONE_TEL)
+        cards.append(service_card_html(title, price, img, desc, href, label))
+    return "\n          ".join(cards)
+
+
+def faq_schema(questions: list[tuple[str, str]]) -> dict:
+    return {
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": q,
+                "acceptedAnswer": {"@type": "Answer", "text": a},
+            }
+            for q, a in questions
+        ],
+    }
+
+
+def breadcrumb_schema(items: list[tuple[str, str]]) -> dict:
+    return {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": i + 1, "name": name, "item": url}
+            for i, (name, url) in enumerate(items)
+        ],
+    }
+
+
+def business_node(city_name: str | None = None) -> dict:
+    name = f"ЗамокСервис — {city_name}" if city_name else "ЗамокСервис Могилёв"
+    return {
+        "@type": "Locksmith",
+        "@id": f"{DOMAIN}/#business",
+        "name": name,
+        "alternateName": "Вскрытие замков Могилёв",
+        "description": "Срочное аварийное вскрытие замков в Могилёве и Могилёвской области, Беларусь. Круглосуточный выезд мастера.",
+        "url": DOMAIN + "/",
+        "telephone": PHONE_TEL,
+        "email": EMAIL,
+        "priceRange": "от 30 BYN",
+        "image": f"{DOMAIN}/images/og-cover.jpg",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": city_name or "Могилёв",
+            "addressRegion": "Могилёвская область",
+            "addressCountry": "BY",
+        },
+        "geo": {"@type": "GeoCoordinates", "latitude": 53.8945, "longitude": 30.3307},
+        "openingHoursSpecification": {
+            "@type": "OpeningHoursSpecification",
+            "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            "opens": "00:00",
+            "closes": "23:59",
+        },
+        "sameAs": [TELEGRAM_URL, WHATSAPP_URL],
+    }
+
+
+def city_schema(city: dict, canonical: str, faq_items: list[tuple[str, str]]) -> str:
+    name, prep, time = city["name"], city["prep"], city["time"]
+    graph = [
+        {**business_node(name), "@id": f"{canonical}#business", "areaServed": name},
+        {
+            "@type": "WebPage",
+            "@id": f"{canonical}#webpage",
+            "url": canonical,
+            "name": f"Вскрытие замков в {prep}",
+            "description": f"Срочное вскрытие замков в {prep}. Выезд {time}, 24/7.",
+            "inLanguage": "ru-BY",
+            "isPartOf": {"@id": f"{DOMAIN}/#website"},
+        },
+        faq_schema(faq_items),
+        breadcrumb_schema([("Главная", DOMAIN + "/"), (name, canonical)]),
+    ]
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=2)
+
+
+def combo_schema(service_slug: str, city: dict, canonical: str) -> str:
+    svc = SERVICE_COMBOS[service_slug]
+    name, prep, time = city["name"], city["prep"], city["time"]
+    img = {"vskrytie-avto": "car-unlock", "remont-zamkov": "lock-repair", "zamena-zamkov": "door-unlock"}.get(
+        service_slug, "master-work"
+    )
+    graph = [
+        {
+            "@type": "Service",
+            "@id": f"{canonical}#service",
+            "name": f"{svc['h1']} в {prep}",
+            "description": svc["desc"],
+            "provider": business_node(name),
+            "areaServed": {"@type": "City", "name": name},
+            "image": f"{DOMAIN}/images/{img}.webp",
+            "offers": {
+                "@type": "Offer",
+                "price": svc["price"].replace("от ", "").replace(" BYN", ""),
+                "priceCurrency": "BYN",
+                "availability": "https://schema.org/InStock",
+            },
+        },
+        {
+            "@type": "WebPage",
+            "url": canonical,
+            "name": f"{svc['h1']} в {prep}",
+            "description": f"{svc['desc']} Выезд {time}.",
+            "inLanguage": "ru-BY",
+        },
+        breadcrumb_schema([
+            ("Главная", DOMAIN + "/"),
+            (svc["title_short"], f"{DOMAIN}/{service_slug}.html"),
+            (name, canonical),
+        ]),
+    ]
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=2)
+
+
+def blog_article_schema(post: dict, canonical: str) -> str:
+    graph = [
+        {
+            "@type": "Article",
+            "@id": f"{canonical}#article",
+            "headline": post["title"],
+            "description": post["desc"],
+            "datePublished": post["date"],
+            "dateModified": post["date"],
+            "inLanguage": "ru-BY",
+            "image": f"{DOMAIN}/images/{post['img']}.webp",
+            "author": {"@type": "Organization", "name": "ЗамокСервис Могилёв", "url": DOMAIN + "/"},
+            "publisher": {
+                "@type": "Organization",
+                "name": "ЗамокСервис Могилёв",
+                "logo": {"@type": "ImageObject", "url": f"{DOMAIN}/favicon.svg"},
+            },
+            "mainEntityOfPage": canonical,
+        },
+        breadcrumb_schema([
+            ("Главная", DOMAIN + "/"),
+            ("Блог", DOMAIN + "/blog/"),
+            (post["title"][:50], canonical),
+        ]),
+    ]
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=2)
+
+
+def service_page_schema(slug: str, service: dict, canonical: str, faq_items: list[tuple[str, str]]) -> str:
+    img = {"vskrytie-avto": "car-unlock", "remont-zamkov": "lock-repair", "zamena-zamkov": "door-unlock"}.get(
+        slug, "master-work"
+    )
+    graph = [
+        {
+            "@type": "Service",
+            "@id": f"{canonical}#service",
+            "name": service["schema_name"],
+            "description": service["desc"],
+            "provider": business_node(),
+            "areaServed": {"@type": "AdministrativeArea", "name": "Могилёвская область"},
+            "image": f"{DOMAIN}/images/{img}.webp",
+            "offers": {
+                "@type": "Offer",
+                "price": service["price_from"].split()[0],
+                "priceCurrency": "BYN",
+            },
+        },
+        faq_schema(faq_items),
+        breadcrumb_schema([("Главная", DOMAIN + "/"), (service["h1"], canonical)]),
+    ]
+    return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=2)
+
 
 def service_card_html(
     title: str,
@@ -41,7 +270,7 @@ def service_card_html(
     link_label: str = "Вызвать →",
 ) -> str:
     """Service card with thumbnail."""
-    thumb = f'<figure class="service-card__thumb">{img_tag(img, title.replace("<", "").split(">")[-1] if "<" in title else title, 320, 180)}</figure>'
+    thumb = f'<figure class="service-card__thumb">{img_tag(img, strip_html(title), 320, 180)}</figure>'
     body = thumb + f"<h3>{title}</h3>"
     if desc:
         body += f"<p>{desc}</p>"
