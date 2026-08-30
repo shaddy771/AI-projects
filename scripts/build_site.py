@@ -19,6 +19,11 @@ from generate_pages import (  # noqa: E402
     mobile_nav,
     render_services,
 )
+from articles import (  # noqa: E402
+    BLOG_PER_PAGE,
+    published_articles,
+    paginate_articles,
+)
 from shared import (  # noqa: E402
     BLOG_CONTENT,
     BLOG_POSTS,
@@ -266,40 +271,95 @@ def render_combo(service_slug: str, city: dict) -> str:
     return page_shell(title, desc, kw, canonical, bc, body, schema, hero_img)
 
 
-def render_blog_index() -> str:
-    cards = "\n".join(
+def blog_faq_html(faq: list[dict]) -> str:
+    if not faq:
+        return ""
+    items = "\n".join(
+        f'          <details class="faq-item"><summary>{f["q"]}</summary><p>{f["a"]}</p></details>'
+        for f in faq
+    )
+    return f"""
+    <section class="blog-article__faq">
+      <h2>Частые вопросы</h2>
+      <div class="faq-list">{items}
+      </div>
+    </section>"""
+
+
+def blog_card_html(p: dict) -> str:
+    return (
         f'          <article class="blog-card">'
         f'<a href="/blog/{p["slug"]}.html" class="blog-card__thumb">{img_tag(p["img"], p["title"], 480, 270)}</a>'
         f'<div class="blog-card__body"><time datetime="{p["date"]}">{p["date"]}</time>'
         f'<h2><a href="/blog/{p["slug"]}.html">{p["title"]}</a></h2>'
         f'<p>{p["desc"]}</p><span class="blog-card__read">{p["read"]}</span></div></article>'
-        for p in BLOG_POSTS
     )
+
+
+def pagination_html(page: int, total_pages: int, base_path: str = "/blog/") -> str:
+    if total_pages <= 1:
+        return ""
+    links = []
+    for p in range(1, total_pages + 1):
+        href = base_path if p == 1 else f"/blog/page-{p}.html"
+        cls = "pagination__link pagination__link--active" if p == page else "pagination__link"
+        links.append(f'<a href="{href}" class="{cls}">{p}</a>')
+    return f'<nav class="pagination" aria-label="Страницы блога">{"".join(links)}</nav>'
+
+
+def render_blog_index(page: int = 1) -> str:
+    all_posts = published_articles()
+    posts, total_pages = paginate_articles(all_posts, page, BLOG_PER_PAGE)
+    cards = "\n".join(blog_card_html(p) for p in posts)
+    pag = pagination_html(page, total_pages)
+    title_suffix = f" — страница {page}" if page > 1 else ""
+    canonical = f"{DOMAIN}/blog/" if page == 1 else f"{DOMAIN}/blog/page-{page}.html"
     body = f"""
     <section class="section">
       <div class="container">
-        <header class="section__header"><h1>Блог о замках и безопасности</h1><p>Полезные статьи от мастеров ЗамокСервис</p></header>
+        <header class="section__header"><h1>Блог о замках и безопасности{title_suffix}</h1><p>Полезные статьи от мастеров ЗамокСервис</p></header>
         <div class="blog-grid">{cards}
         </div>
+        {pag}
       </div>
     </section>"""
-    return page_shell("Блог — советы по замкам | ЗамокСервис Могилёв", "Статьи о замках, вскрытии, ремонте и безопасности.", "блог замки могилёв", f"{DOMAIN}/blog/", '<a href="/">Главная</a> → Блог', body)
+    bc = '<a href="/">Главная</a> → Блог' + (f' → Страница {page}' if page > 1 else '')
+    return page_shell(
+        f"Блог — советы по замкам{title_suffix} | ЗамокСервис",
+        "Статьи о замках, вскрытии, ремонте и безопасности в Могилёве и области.",
+        "блог замки могилёв",
+        canonical,
+        bc,
+        body,
+    )
 
 
 def render_blog_post(post: dict) -> str:
-    content = BLOG_CONTENT.get(post["slug"], "<p>Статья в подготовке.</p>")
+    content = post.get("content") or BLOG_CONTENT.get(post["slug"], "<p>Статья в подготовке.</p>")
+    faq_block = blog_faq_html(post.get("faq", []))
     canonical = f"{DOMAIN}/blog/{post['slug']}.html"
     schema = blog_article_schema(post, canonical)
+    keywords = post.get("keywords", "замки могилёв")
     body = f"""
     <article class="section blog-article">
       <div class="container blog-article__inner">
         <figure class="blog-article__cover">{img_tag(post["img"], post["title"], 720, 405, "eager")}</figure>
         <header><time datetime="{post["date"]}">{post["date"]}</time><h1>{post["title"]}</h1><p class="blog-article__lead">{post["desc"]}</p></header>
         <div class="blog-article__content">{content}</div>
-        <div class="blog-article__cta"><a href="tel:{PHONE_TEL}" class="btn btn--primary">Вызвать мастера</a></div>
+        {faq_block}
+        <div class="blog-article__cta"><a href="tel:{PHONE_TEL}" class="btn btn--primary">Вызвать мастера: {PHONE}</a></div>
       </div>
     </article>"""
-    return page_shell(post["title"], post["desc"], "замки могилёв", canonical, f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → {post["title"][:40]}', body, schema, f"{post['img']}.webp")
+    return page_shell(
+        f'{post["title"]} | ЗамокСервис',
+        post["desc"],
+        keywords,
+        canonical,
+        f'<a href="/">Главная</a> → <a href="/blog/">Блог</a> → {post["title"][:40]}',
+        body,
+        schema,
+        f"{post['img']}.webp",
+    )
 
 
 def generate_sitemap() -> str:
@@ -311,8 +371,12 @@ def generate_sitemap() -> str:
             urls.append((f"/{c['file']}", "monthly", "0.85"))
         for s in SERVICE_COMBOS:
             urls.append((f"/uslugi/{s}-{c['slug']}.html", "monthly", "0.8"))
-    for p in BLOG_POSTS:
+    for p in published_articles():
         urls.append((f"/blog/{p['slug']}.html", "monthly", "0.75"))
+    all_posts = published_articles()
+    _, total_pages = paginate_articles(all_posts, 1, BLOG_PER_PAGE)
+    for pg in range(2, total_pages + 1):
+        urls.append((f"/blog/page-{pg}.html", "weekly", "0.7"))
     lines = ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     for path, freq, pri in urls:
         lines += [f"  <url>", f"    <loc>{DOMAIN}{path}</loc>", f"    <lastmod>2026-08-30</lastmod>", f"    <changefreq>{freq}</changefreq>", f"    <priority>{pri}</priority>", f"  </url>"]
@@ -355,10 +419,14 @@ def main():
         html = html.replace('src="/js/main.js"', 'src="/js/main.min.js"')
         (ROOT / f"{slug}.html").write_text(html, encoding="utf-8")
 
-    (blog / "index.html").write_text(render_blog_index(), encoding="utf-8")
-    for post in BLOG_POSTS:
+    (blog / "index.html").write_text(render_blog_index(1), encoding="utf-8")
+    all_posts = published_articles()
+    _, total_pages = paginate_articles(all_posts, 1, BLOG_PER_PAGE)
+    for pg in range(2, total_pages + 1):
+        (blog / f"page-{pg}.html").write_text(render_blog_index(pg), encoding="utf-8")
+    for post in published_articles():
         (blog / f"{post['slug']}.html").write_text(render_blog_post(post), encoding="utf-8")
-    print(f"Blog: {len(BLOG_POSTS)} posts")
+    print(f"Blog: {len(published_articles())} published, {total_pages} pages")
 
     (ROOT / "sitemap.xml").write_text(generate_sitemap(), encoding="utf-8")
     print("Sitemap updated")

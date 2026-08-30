@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from generate_pages import CITIES  # noqa: E402
+from articles import published_articles  # noqa: E402
 from shared import (  # noqa: E402
     BLOG_POSTS,
     DOMAIN,
@@ -69,7 +70,7 @@ def generate_llms_txt() -> str:
         "## Блог",
         f"- [Все статьи]({DOMAIN}/blog/)",
     ]
-    for p in BLOG_POSTS:
+    for p in published_articles():
         lines.append(f"- [{p['title']}]({DOMAIN}/blog/{p['slug']}.html)")
     lines += [
         "",
@@ -121,8 +122,8 @@ def generate_llms_full_txt() -> str:
         lines.append(f"A: {a}")
         lines.append("")
     lines += ["## Блог — полезные статьи"]
-    for p in BLOG_POSTS:
-        lines.append(f"- [{p['title']}]({DOMAIN}/blog/{p['slug']}.html) ({p['date']}, {p['read']})")
+    for p in published_articles():
+        lines.append(f"- [{p['title']}]({DOMAIN}/blog/{p['slug']}.html) ({p['date']}, {p.get('read', '')})")
         lines.append(f"  {p['desc']}")
     lines += [
         "",

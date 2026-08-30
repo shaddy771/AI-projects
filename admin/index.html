@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Админка — ЗамокСервис</title>
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body>
+  <div id="login-screen" class="login">
+    <form id="login-form" class="login__box">
+      <h1>ЗамокСервис</h1>
+      <p>Панель управления блогом</p>
+      <input type="password" id="password" placeholder="Пароль" required autocomplete="current-password">
+      <button type="submit" class="btn">Войти</button>
+      <p class="login__hint">Пароль по умолчанию: zamok2026</p>
+    </form>
+  </div>
+
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="topbar__brand">Замок<span>Сервис</span> — Админка</div>
+      <div class="topbar__actions">
+        <button id="btn-rebuild" class="btn btn--primary">Пересобрать сайт</button>
+        <button id="btn-logout" class="btn btn--ghost">Выйти</button>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="stats" id="stats"></section>
+
+      <section class="panel">
+        <div class="panel__head">
+          <h2>Статьи <span id="articles-count"></span></h2>
+          <input type="search" id="search" placeholder="Поиск..." class="search">
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead>
+              <tr><th>Дата</th><th>Заголовок</th><th>Статус</th><th></th></tr>
+            </thead>
+            <tbody id="articles-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel" id="editor" hidden>
+        <h2>Редактирование</h2>
+        <form id="edit-form">
+          <input type="hidden" id="edit-slug">
+          <label>Заголовок<input id="edit-title" required></label>
+          <label>Описание<textarea id="edit-desc" rows="2"></textarea></label>
+          <label>Дата публикации<input type="date" id="edit-date"></label>
+          <label>Статус
+            <select id="edit-status">
+              <option value="scheduled">Запланировано</option>
+              <option value="published">Опубликовано</option>
+              <option value="draft">Черновик</option>
+            </select>
+          </label>
+          <label>Картинка
+            <select id="edit-img">
+              <option value="door-unlock">door-unlock</option>
+              <option value="car-unlock">car-unlock</option>
+              <option value="lock-repair">lock-repair</option>
+              <option value="master-work">master-work</option>
+            </select>
+          </label>
+          <label>Ключевые слова<input id="edit-keywords"></label>
+          <label>Контент (HTML)<textarea id="edit-content" rows="12"></textarea></label>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--primary">Сохранить</button>
+            <button type="button" id="btn-cancel" class="btn btn--ghost">Отмена</button>
+          </div>
+        </form>
+      </section>
+
+      <pre id="log" class="log" hidden></pre>
+    </main>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

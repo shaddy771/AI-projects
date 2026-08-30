@@ -214,9 +214,9 @@ def blog_article_schema(post: dict, canonical: str) -> str:
             "@type": "Article",
             "@id": f"{canonical}#article",
             "headline": post["title"],
-            "description": post["desc"],
+            "description": post.get("desc", ""),
             "datePublished": post["date"],
-            "dateModified": post["date"],
+            "dateModified": post.get("modified", post["date"]),
             "inLanguage": "ru-BY",
             "image": f"{DOMAIN}/images/{post['img']}.webp",
             "author": {"@type": "Organization", "name": "ЗамокСервис Могилёв", "url": DOMAIN + "/"},
@@ -226,6 +226,7 @@ def blog_article_schema(post: dict, canonical: str) -> str:
                 "logo": {"@type": "ImageObject", "url": f"{DOMAIN}/favicon.svg"},
             },
             "mainEntityOfPage": canonical,
+            "keywords": post.get("keywords", ""),
         },
         breadcrumb_schema([
             ("Главная", DOMAIN + "/"),
@@ -233,6 +234,9 @@ def blog_article_schema(post: dict, canonical: str) -> str:
             (post["title"][:50], canonical),
         ]),
     ]
+    faq = post.get("faq")
+    if faq:
+        graph.append(faq_schema([(f["q"], f["a"]) for f in faq]))
     return json.dumps({"@context": "https://schema.org", "@graph": graph}, ensure_ascii=False, indent=2)
 
 
