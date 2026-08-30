@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="0AB5@ ?> 2A:@KB8N 70<:>2 =0 2K5745">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1b263b"/>
+      <stop offset="100%" style="stop-color:#0d1b2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <rect x="80" y="120" width="280" height="380" rx="8" fill="#415a77" opacity="0.5"/>
+  <rect x="100" y="140" width="240" height="340" rx="4" fill="#778da9"/>
+  <circle cx="220" cy="310" r="28" fill="#e85d04"/>
+  <rect x="208" y="290" width="24" height="40" rx="4" fill="#faa307"/>
+  <path d="M400 180h220v320H400z" fill="#2d6a4f" opacity="0.3"/>
+  <circle cx="510" cy="340" r="60" fill="none" stroke="#e85d04" stroke-width="6"/>
+  <path d="M480 340h60M510 310v60" stroke="#e85d04" stroke-width="4"/>
+  <text x="400" y="520" fill="#fff" font-family="system-ui,sans-serif" font-size="28" font-weight="700">@>D5AA8>=0;L=K9 <0AB5@</text>
+  <text x="400" y="555" fill="#faa307" font-family="system-ui,sans-serif" font-size="20">K574 24/7 · >38;Q2A:0O >1;0ABL</text>
+</svg>

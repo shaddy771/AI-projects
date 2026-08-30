@@ -109,16 +109,16 @@
     }, 8000);
   }
 
-  // Track phone clicks for conversion analytics
+  function trackEvent(name) {
+    if (typeof gtag === 'function') gtag('event', name, { event_category: 'conversion' });
+    if (typeof ym === 'function') ym(/* YANDEX_METRIKA_ID */, 'reachGoal', name);
+  }
+
   document.querySelectorAll('a[href^="tel:"]').forEach(link => {
-    link.addEventListener('click', () => {
-      if (typeof gtag === 'function') {
-        gtag('event', 'phone_call', { event_category: 'conversion' });
-      }
-      if (typeof ym === 'function') {
-        ym(/* YANDEX_METRIKA_ID */, 'reachGoal', 'phone_call');
-      }
-    });
+    link.addEventListener('click', () => trackEvent('phone_call'));
+  });
+  document.querySelectorAll('[data-social]').forEach(link => {
+    link.addEventListener('click', () => trackEvent('social_' + link.dataset.social));
   });
 
   // Smooth scroll for anchor links
