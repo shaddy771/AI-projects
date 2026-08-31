@@ -1,0 +1,13 @@
+# Security headers for Apache shared hosting
+<IfModule mod_headers.c>
+  Header set X-Frame-Options "DENY"
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>
+
+# Block access to sensitive paths if accidentally uploaded
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(data|scripts|admin)/ - [F,L]
+</IfModule>

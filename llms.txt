@@ -1,0 +1,48 @@
+# ЗамокСервис Могилёв
+
+> Срочное аварийное вскрытие замков в Могилёве и Могилёвской области, Беларусь. Круглосуточный выезд мастера без повреждения дверей и замков.
+
+## Контакты
+- Телефон: [+375 (44) 791-39-41](tel:+375447913941)
+- Telegram: https://t.me/zamokservice_mogilev
+- Viber: viber://chat?number=375447913941
+- WhatsApp: https://wa.me/375447913941
+- Email: info@vskritie-zamkov-mogilev.by
+- Сайт: https://vskritie-zamkov-mogilev.by/
+
+## Основные услуги
+- [Вскрытие замков — главная](https://vskritie-zamkov-mogilev.by/): двери, авто, сейфы от 30 BYN
+- [Вскрытие автомобилей](https://vskritie-zamkov-mogilev.by/vskrytie-avto.html): от 40 BYN, все марки
+- [Ремонт замков](https://vskritie-zamkov-mogilev.by/remont-zamkov.html): от 20 BYN, выезд мастера
+- [Замена замков](https://vskritie-zamkov-mogilev.by/zamena-zamkov.html): от 25 BYN, Cisa, Kale, Гардиан
+
+## Города обслуживания
+- [Могилёв](https://vskritie-zamkov-mogilev.by/): выезд 15–20 мин
+- [Бобруйск](https://vskritie-zamkov-mogilev.by/bobruisk.html): выезд 25–35 мин
+- [Горки](https://vskritie-zamkov-mogilev.by/gorki.html): выезд 30–40 мин
+- [Осиповичи](https://vskritie-zamkov-mogilev.by/osipovichi.html): выезд 30–45 мин
+- [Кричев](https://vskritie-zamkov-mogilev.by/krichev.html): выезд 40–50 мин
+- [Быхов](https://vskritie-zamkov-mogilev.by/byhov.html): выезд 35–45 мин
+- [Костюковичи](https://vskritie-zamkov-mogilev.by/kostyukovichi.html): выезд 45–55 мин
+- [Климовичи](https://vskritie-zamkov-mogilev.by/klimovichi.html): выезд 50–60 мин
+- [Шклов](https://vskritie-zamkov-mogilev.by/shklov.html): выезд 25–35 мин
+- [Чаусы](https://vskritie-zamkov-mogilev.by/chausy.html): выезд 30–40 мин
+- [Мстиславль](https://vskritie-zamkov-mogilev.by/mstislavl.html): выезд 40–50 мин
+- [Круглое](https://vskritie-zamkov-mogilev.by/krugloe.html): выезд 30–40 мин
+- [Глусск](https://vskritie-zamkov-mogilev.by/glusk.html): выезд 45–55 мин
+- [Белыничи](https://vskritie-zamkov-mogilev.by/belynichi.html): выезд 35–45 мин
+- [Кировск](https://vskritie-zamkov-mogilev.by/kirovsk.html): выезд 40–50 мин
+
+## Блог
+- [Все статьи](https://vskritie-zamkov-mogilev.by/blog/)
+- [Что делать, если заклинил замок: пошаговая инструкция](https://vskritie-zamkov-mogilev.by/blog/chto-delat-zaklinil-zamok.html)
+- [Как выбрать замок для входной двери в 2026 году](https://vskritie-zamkov-mogilev.by/blog/kak-vybrat-zamok-dlya-dveri.html)
+- [Сломался ключ в замке — можно ли извлечь самому?](https://vskritie-zamkov-mogilev.by/blog/slomalsya-klyuch-v-zamke.html)
+- [Сколько стоит вскрытие замка в Могилёве в 2026](https://vskritie-zamkov-mogilev.by/blog/skolko-stoit-vskrytie-zamka.html)
+- [Вскрытие автомобиля без повреждений: как это работает](https://vskritie-zamkov-mogilev.by/blog/vskrytie-avto-bez-povrezhdeniy.html)
+- [Как заменить личинку замка своими руками и когда лучше вызвать мастера](https://vskritie-zamkov-mogilev.by/blog/kak-zamenit-lichinku-zamka.html)
+
+## Optional
+- [Полная информация для AI](https://vskritie-zamkov-mogilev.by/llms-full.txt)
+- [Sitemap](https://vskritie-zamkov-mogilev.by/sitemap.xml)
+- [Robots.txt](https://vskritie-zamkov-mogilev.by/robots.txt)
