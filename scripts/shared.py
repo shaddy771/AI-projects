@@ -4,8 +4,8 @@
 import json
 import re
 
-DOMAIN = "https://vskrytie-zamkov-mogilev.by"
-EMAIL = "info@vskrytie-zamkov-mogilev.by"
+DOMAIN = "https://vskritie-zamkov-mogilev.by"
+EMAIL = "info@vskritie-zamkov-mogilev.by"
 PHONE = "+375 (44) 791-39-41"
 PHONE_TEL = "+375447913941"
 PHONE_VIBER = "375447913941"

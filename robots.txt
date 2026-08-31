@@ -27,8 +27,8 @@ Allow: /
 User-agent: cohere-ai
 Allow: /
 
-Sitemap: https://vskrytie-zamkov-mogilev.by/sitemap.xml
+Sitemap: https://vskritie-zamkov-mogilev.by/sitemap.xml
 
 # Информация для AI-поиска
-# LLMs.txt: https://vskrytie-zamkov-mogilev.by/llms.txt
-# LLMs-full: https://vskrytie-zamkov-mogilev.by/llms-full.txt
+# LLMs.txt: https://vskritie-zamkov-mogilev.by/llms.txt
+# LLMs-full: https://vskritie-zamkov-mogilev.by/llms-full.txt
